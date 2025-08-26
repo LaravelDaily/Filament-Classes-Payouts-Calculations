@@ -15,15 +15,15 @@ class ClassScheduleSeeder extends Seeder
      */
     public function run(): void
     {
-        $learningClass = LearningClass::where('name', 'Math Group Class')->first();
-        $teacher = User::where('email', 'john@example.com')->first();
+        $learningClasses = LearningClass::all();
+        $teachers = User::whereHas('role', function ($query) {
+            $query->where('name', 'Teacher');
+        })->get();
         
-        ClassSchedule::create([
-            'learning_class_id' => $learningClass->id,
-            'scheduled_date' => '2025-09-01',
-            'start_time' => '10:00:00',
-            'end_time' => '11:00:00',
-            'teacher_id' => $teacher->id,
+        // Create 30 class schedules with various classes and teachers
+        ClassSchedule::factory()->count(30)->create([
+            'learning_class_id' => $learningClasses->random()->id,
+            'teacher_id' => $teachers->random()->id,
         ]);
     }
 }

@@ -15,12 +15,16 @@ class LearningClassSeeder extends Seeder
     public function run(): void
     {
         $groupType = ClassType::where('name', 'Group')->first();
+        $oneOnOneType = ClassType::where('name', 'One-on-One')->first();
         
-        LearningClass::create([
+        // Create 8 group classes
+        LearningClass::factory()->count(8)->create([
             'class_type_id' => $groupType->id,
-            'name' => 'Math Group Class',
-            'description' => 'Group mathematics class for beginners',
-            'price_per_student' => 50.00,
+        ]);
+        
+        // Create 5 one-on-one classes
+        LearningClass::factory()->count(5)->create([
+            'class_type_id' => $oneOnOneType->id,
         ]);
     }
 }

@@ -15,12 +15,13 @@ class AttendanceSeeder extends Seeder
      */
     public function run(): void
     {
-        $classSchedule = ClassSchedule::first();
-        $student = Student::where('email', 'alice@example.com')->first();
+        $classSchedules = ClassSchedule::all();
+        $students = Student::all();
         
-        Attendance::create([
-            'class_schedule_id' => $classSchedule->id,
-            'student_id' => $student->id,
+        // Create 80 attendance records with various schedules and students
+        Attendance::factory()->count(80)->create([
+            'class_schedule_id' => $classSchedules->random()->id,
+            'student_id' => $students->random()->id,
         ]);
     }
 }

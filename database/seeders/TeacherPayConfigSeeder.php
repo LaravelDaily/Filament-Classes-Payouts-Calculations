@@ -14,12 +14,15 @@ class TeacherPayConfigSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::where('email', 'john@example.com')->first();
+        $teachers = User::whereHas('role', function ($query) {
+            $query->where('name', 'Teacher');
+        })->get();
         
-        TeacherPayConfig::create([
-            'user_id' => $user->id,
-            'base_pay' => 20.00,
-            'bonus_per_student' => 5.00,
-        ]);
+        // Create pay configs for all teachers
+        foreach ($teachers as $teacher) {
+            TeacherPayConfig::factory()->create([
+                'user_id' => $teacher->id,
+            ]);
+        }
     }
 }

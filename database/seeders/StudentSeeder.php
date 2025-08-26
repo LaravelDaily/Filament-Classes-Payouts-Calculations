@@ -13,9 +13,7 @@ class StudentSeeder extends Seeder
      */
     public function run(): void
     {
-        Student::create([
-            'name' => 'Alice Johnson',
-            'email' => 'alice@example.com',
-        ]);
+        // Create 25 students for testing
+        Student::factory()->count(25)->create();
     }
 }

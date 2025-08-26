@@ -15,13 +15,13 @@ class EnrollmentSeeder extends Seeder
      */
     public function run(): void
     {
-        $student = Student::where('email', 'alice@example.com')->first();
-        $learningClass = LearningClass::where('name', 'Math Group Class')->first();
+        $students = Student::all();
+        $learningClasses = LearningClass::all();
         
-        Enrollment::create([
-            'student_id' => $student->id,
-            'learning_class_id' => $learningClass->id,
-            'start_date' => '2025-09-01',
+        // Create 50 enrollments with random student-class combinations
+        Enrollment::factory()->count(50)->create([
+            'student_id' => $students->random()->id,
+            'learning_class_id' => $learningClasses->random()->id,
         ]);
     }
 }

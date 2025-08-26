@@ -15,15 +15,15 @@ class TeacherPayoutSeeder extends Seeder
      */
     public function run(): void
     {
-        $classSchedule = ClassSchedule::first();
-        $teacher = User::where('email', 'john@example.com')->first();
+        $classSchedules = ClassSchedule::all();
+        $teachers = User::whereHas('role', function ($query) {
+            $query->where('name', 'Teacher');
+        })->get();
         
-        TeacherPayout::create([
-            'class_schedule_id' => $classSchedule->id,
-            'teacher_id' => $teacher->id,
-            'base_pay' => 20.00,
-            'bonus_pay' => 10.00,
-            'total_pay' => 30.00,
+        // Create 40 teacher payouts for various schedules and teachers
+        TeacherPayout::factory()->count(40)->create([
+            'class_schedule_id' => $classSchedules->random()->id,
+            'teacher_id' => $teachers->random()->id,
         ]);
     }
 }
