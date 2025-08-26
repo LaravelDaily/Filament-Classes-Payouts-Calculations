@@ -4,6 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -18,6 +21,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'role_id',
         'name',
         'email',
         'password',
@@ -44,5 +48,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function teacherPayConfig(): HasOne
+    {
+        return $this->hasOne(TeacherPayConfig::class);
+    }
+
+    public function classSchedules(): HasMany
+    {
+        return $this->hasMany(ClassSchedule::class, 'teacher_id');
+    }
+
+    public function substituteClassSchedules(): HasMany
+    {
+        return $this->hasMany(ClassSchedule::class, 'substitute_teacher_id');
+    }
+
+    public function teacherPayouts(): HasMany
+    {
+        return $this->hasMany(TeacherPayout::class, 'teacher_id');
     }
 }
