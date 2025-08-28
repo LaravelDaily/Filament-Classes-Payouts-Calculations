@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__laravel-boost__list-artisan-commands",
+      "Bash(php artisan make:filament-resource:*)",
+      "mcp__laravel-boost__search-docs",
+      "mcp__laravel-boost__database-query",
+      "Bash(php artisan make:policy:*)",
+      "Bash(php artisan make:test:*)",
+      "Bash(php artisan test:*)",
+      "Bash(vendor/bin/pint:*)",
+      "mcp__laravel-boost__get-absolute-url"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "laravel-boost"
+  ]
+}
