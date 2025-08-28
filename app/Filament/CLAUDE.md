@@ -34,8 +34,7 @@ Forms\Components\Select::make('user_id')
 
 
 ## Testing
-- When generating Filament resource, always generate Filament smoke tests to check if the Resource works. When making changes to Filament resource, run the tests (generate them if they don't exist) and make changes to resource/tests to make the tests pass.
-- It's important to test Filament functionality for user satisfaction.
+- When generating Filament resource, you MUST generate Filament smoke tests to check if the Resource works. When making changes to Filament resource, you MUST run the tests (generate them if they don't exist) and make changes to resource/tests to make the tests pass.
 - Ensure that you are authenticated to access the application within the test.
 - Filament uses Livewire, so start assertions with `livewire()` or `Livewire::test()`.
 
