@@ -1,99 +1,81 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use Tests\TestCase;
 
-class UserResourceTest extends TestCase
-{
-    use RefreshDatabase;
+beforeEach(function () {
+    // Create roles needed for tests
+    Role::create(['name' => 'Owner']);
+    Role::create(['name' => 'Admin']);
+    Role::create(['name' => 'Teacher']);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+test('owner can list users', function () {
+    $owner = User::factory()->create(['role_id' => Role::where('name', 'Owner')->first()->id]);
 
-        // Create roles needed for tests
-        Role::create(['name' => 'Owner']);
-        Role::create(['name' => 'Admin']);
-        Role::create(['name' => 'Teacher']);
-    }
+    $this->actingAs($owner);
 
-    public function test_owner_can_list_users(): void
-    {
-        $owner = User::factory()->create(['role_id' => Role::where('name', 'Owner')->first()->id]);
+    Livewire::test(ListUsers::class)
+        ->assertSuccessful();
+});
 
-        $this->actingAs($owner);
+test('admin can list users', function () {
+    $admin = User::factory()->create(['role_id' => Role::where('name', 'Admin')->first()->id]);
 
-        Livewire::test(ListUsers::class)
-            ->assertSuccessful();
-    }
+    $this->actingAs($admin);
 
-    public function test_admin_can_list_users(): void
-    {
-        $admin = User::factory()->create(['role_id' => Role::where('name', 'Admin')->first()->id]);
+    Livewire::test(ListUsers::class)
+        ->assertSuccessful();
+});
 
-        $this->actingAs($admin);
+test('teacher cannot list users', function () {
+    $teacher = User::factory()->create(['role_id' => Role::where('name', 'Teacher')->first()->id]);
 
-        Livewire::test(ListUsers::class)
-            ->assertSuccessful();
-    }
+    $this->actingAs($teacher);
 
-    public function test_teacher_cannot_list_users(): void
-    {
-        $teacher = User::factory()->create(['role_id' => Role::where('name', 'Teacher')->first()->id]);
+    Livewire::test(ListUsers::class)
+        ->assertForbidden();
+});
 
-        $this->actingAs($teacher);
+test('owner can render create user page', function () {
+    $owner = User::factory()->create(['role_id' => Role::where('name', 'Owner')->first()->id]);
 
-        Livewire::test(ListUsers::class)
-            ->assertForbidden();
-    }
+    $this->actingAs($owner);
 
-    public function test_owner_can_render_create_user_page(): void
-    {
-        $owner = User::factory()->create(['role_id' => Role::where('name', 'Owner')->first()->id]);
+    Livewire::test(CreateUser::class)
+        ->assertSuccessful()
+        ->assertFormExists();
+});
 
-        $this->actingAs($owner);
+test('teacher edit profile follows authorization policy', function () {
+    $teacherRole = Role::where('name', 'Teacher')->first();
+    $teacher = User::factory()->create(['role_id' => $teacherRole->id]);
+    $teacher->load('role'); // Ensure role is loaded for policy check
 
-        Livewire::test(CreateUser::class)
-            ->assertSuccessful()
-            ->assertFormExists();
-    }
+    $this->actingAs($teacher);
 
-    public function test_teacher_edit_profile_follows_authorization_policy(): void
-    {
-        $teacherRole = Role::where('name', 'Teacher')->first();
-        $teacher = User::factory()->create(['role_id' => $teacherRole->id]);
-        $teacher->load('role'); // Ensure role is loaded for policy check
+    // This test verifies that authorization is working - teacher gets 403 as expected
+    // The authorization policy should be checked and may be preventing access
+    Livewire::test(EditUser::class, [
+        'record' => $teacher->id,
+    ])
+        ->assertForbidden();
+});
 
-        $this->actingAs($teacher);
+test('teacher cannot edit other users', function () {
+    $teacherRole = Role::where('name', 'Teacher')->first();
+    $teacher = User::factory()->create(['role_id' => $teacherRole->id]);
+    $otherTeacher = User::factory()->create(['role_id' => $teacherRole->id]);
+    $teacher->load('role');
 
-        // This test verifies that authorization is working - teacher gets 403 as expected
-        // The authorization policy should be checked and may be preventing access
-        Livewire::test(EditUser::class, [
-            'record' => $teacher->id,
-        ])
-            ->assertForbidden();
-    }
+    $this->actingAs($teacher);
 
-    public function test_teacher_cannot_edit_other_users(): void
-    {
-        $teacherRole = Role::where('name', 'Teacher')->first();
-        $teacher = User::factory()->create(['role_id' => $teacherRole->id]);
-        $otherTeacher = User::factory()->create(['role_id' => $teacherRole->id]);
-        $teacher->load('role');
-
-        $this->actingAs($teacher);
-
-        Livewire::test(EditUser::class, [
-            'record' => $otherTeacher->id,
-        ])
-            ->assertForbidden();
-    }
-}
+    Livewire::test(EditUser::class, [
+        'record' => $otherTeacher->id,
+    ])
+        ->assertForbidden();
+});
