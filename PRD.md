@@ -29,11 +29,10 @@ The system should NOT cover payments, only the INFORMATION about prices, calcula
 
 ### Phase 2: Operations
 
-4. TeacherPayConfig resource (pay structure, depends on User)
-5. Enrollment resource (student subscriptions, depends on Student + LearningClass)
-6. ClassSchedule resource (scheduling + substitutes, depends on LearningClass + User)
+4. Enrollment resource (student subscriptions, depends on Student + LearningClass)
+5. ClassSchedule resource (scheduling + substitutes, depends on LearningClass + User)
 
 ### Phase 3: Advanced
 
-7. Attendance resource (tracking, depends on Student + ClassSchedule)
-8. TeacherPayout resource (financial calculations, depends on User + ClassSchedule)
+6. Attendance resource (tracking, depends on Student + ClassSchedule)
+7. TeacherPayout resource (financial calculations, depends on User + ClassSchedule)
