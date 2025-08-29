@@ -20,16 +20,6 @@ class EnrollmentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    public static function canAccess(): bool
-    {
-        $user = auth()->user();
-        if (! $user) {
-            return false;
-        }
-
-        return in_array($user->role?->name, ['Owner', 'Admin']);
-    }
-
     public static function form(Schema $schema): Schema
     {
         return EnrollmentForm::configure($schema);
