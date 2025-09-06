@@ -9,9 +9,16 @@
       "Bash(php artisan make:test:*)",
       "Bash(php artisan test:*)",
       "Bash(vendor/bin/pint:*)",
-      "mcp__laravel-boost__get-absolute-url"
+      "mcp__laravel-boost__get-absolute-url",
+      "mcp__laravel-boost__database-schema",
+      "Bash(php artisan make:filament-page:*)",
+      "mcp__laravel-boost__tinker",
+      "Bash(php -l:*)",
+      "Bash(find:*)",
+      "mcp__laravel-boost__list-routes"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "laravel-boost"
   ]

@@ -18,13 +18,13 @@ class EnrollmentFactory extends Factory
      */
     public function definition(): array
     {
-        $startDate = fake()->dateTimeBetween('now', '+1 month');
+        $startDate = fake()->dateTimeBetween('2025-09-01', '2025-09-15');
         
         return [
             'student_id' => Student::inRandomOrder()->first()?->id ?? Student::factory(),
             'learning_class_id' => LearningClass::inRandomOrder()->first()?->id ?? LearningClass::factory(),
             'start_date' => $startDate->format('Y-m-d'),
-            'end_date' => fake()->boolean(70) ? fake()->dateTimeBetween($startDate, '+6 months')->format('Y-m-d') : null,
+            'end_date' => fake()->dateTimeBetween($startDate, '2025-12-20')->format('Y-m-d'),
         ];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ClassSchedules;
 
-use App\Filament\Pages\ManageAttendance;
 use App\Filament\Resources\ClassSchedules\Pages\CreateClassSchedule;
 use App\Filament\Resources\ClassSchedules\Pages\EditClassSchedule;
 use App\Filament\Resources\ClassSchedules\Pages\ListClassSchedules;
@@ -49,7 +48,6 @@ class ClassScheduleResource extends Resource
             'index' => ListClassSchedules::route('/'),
             'create' => CreateClassSchedule::route('/create'),
             'edit' => EditClassSchedule::route('/{record}/edit'),
-            'attendance' => ManageAttendance::route('/{record}/attendance'),
         ];
     }
 }

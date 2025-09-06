@@ -5,6 +5,7 @@ namespace App\Filament\Resources\LearningClasses;
 use App\Filament\Resources\LearningClasses\Pages\CreateLearningClass;
 use App\Filament\Resources\LearningClasses\Pages\EditLearningClass;
 use App\Filament\Resources\LearningClasses\Pages\ListLearningClasses;
+use App\Filament\Resources\LearningClasses\Pages\ManageMonthlyAttendance;
 use App\Filament\Resources\LearningClasses\Schemas\LearningClassForm;
 use App\Filament\Resources\LearningClasses\Tables\LearningClassesTable;
 use App\Models\LearningClass;
@@ -43,6 +44,7 @@ class LearningClassResource extends Resource
             'index' => ListLearningClasses::route('/'),
             'create' => CreateLearningClass::route('/create'),
             'edit' => EditLearningClass::route('/{record}/edit'),
+            'attendance' => ManageMonthlyAttendance::route('/{record}/attendance'),
         ];
     }
 }
