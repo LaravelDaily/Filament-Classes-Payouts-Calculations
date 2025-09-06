@@ -14,9 +14,14 @@ class TeacherPayout extends Model
     protected $fillable = [
         'class_schedule_id',
         'teacher_id',
+        'month',
+        'student_count',
+        'is_substitute',
         'base_pay',
         'bonus_pay',
         'total_pay',
+        'is_paid',
+        'paid_at',
     ];
 
     protected function casts(): array
@@ -25,6 +30,9 @@ class TeacherPayout extends Model
             'base_pay' => 'decimal:2',
             'bonus_pay' => 'decimal:2',
             'total_pay' => 'decimal:2',
+            'is_substitute' => 'boolean',
+            'is_paid' => 'boolean',
+            'paid_at' => 'datetime',
         ];
     }
 
