@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\ClassSchedules\Tables;
 
+use App\Services\ScheduleGenerationService;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -70,6 +74,50 @@ class ClassSchedulesTable
             ])
             ->recordActions([
                 EditAction::make(),
+            ])
+            ->headerActions([
+                Action::make('generate_monthly_schedules')
+                    ->label('Generate Monthly Schedules')
+                    ->color('success')
+                    ->icon('heroicon-o-calendar-days')
+                    ->modalHeading('Generate Class Schedules for Month')
+                    ->modalDescription('Generate class schedules based on weekly schedule patterns. Note: Schedules can only be generated once per month.')
+                    ->schema([
+                        Select::make('month_year')
+                            ->label('Select Month')
+                            ->options(function () {
+                                $service = new ScheduleGenerationService();
+                                return $service->getAvailableMonthsForGeneration()
+                                    ->pluck('label', 'value')
+                                    ->toArray();
+                            })
+                            ->placeholder('Choose a month...')
+                            ->required()
+                            ->helperText('Only months without existing generated schedules are shown'),
+                    ])
+                    ->action(function (array $data) {
+                        try {
+                            [$year, $month] = explode('-', $data['month_year']);
+                            $service = new ScheduleGenerationService();
+                            
+                            $createdSchedules = $service->generateMonthlySchedules((int) $year, (int) $month);
+                            
+                            $monthName = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
+                            
+                            Notification::make()
+                                ->title('Schedules Generated Successfully!')
+                                ->body(sprintf('Created %d class schedules for %s.', count($createdSchedules), $monthName))
+                                ->success()
+                                ->send();
+                                
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Generation Failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+                        }
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
