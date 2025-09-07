@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\ClassSchedule;
 use App\Models\TeacherPayout;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -15,14 +14,12 @@ class TeacherPayoutSeeder extends Seeder
      */
     public function run(): void
     {
-        $classSchedules = ClassSchedule::all();
         $teachers = User::whereHas('role', function ($query) {
             $query->where('name', 'Teacher');
         })->get();
         
-        // Create 40 teacher payouts for various schedules and teachers
-        TeacherPayout::factory()->count(40)->create([
-            'class_schedule_id' => $classSchedules->random()->id,
+        // Create 20 teacher payouts for various months and teachers
+        TeacherPayout::factory()->count(20)->create([
             'teacher_id' => $teachers->random()->id,
         ]);
     }

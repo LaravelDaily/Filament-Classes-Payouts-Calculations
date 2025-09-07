@@ -20,29 +20,16 @@ class PayoutCalculationService
             ->with(['teacher', 'substituteTeacher', 'attendances', 'learningClass'])
             ->get();
 
-        $payoutData = collect();
-
         foreach ($classSchedules as $schedule) {
-            // Calculate for main teacher
-            if ($schedule->teacher_id) {
-                $payoutData->push($this->calculatePayoutForSchedule($schedule, $schedule->teacher, false, $month));
-            }
-
-            // Calculate for substitute teacher if present
-            if ($schedule->substitute_teacher_id && $schedule->substitute_teacher_id !== $schedule->teacher_id) {
-                $payoutData->push($this->calculatePayoutForSchedule($schedule, $schedule->substituteTeacher, true, $month));
-            }
+            $this->updateSchedulePayoutCalculations($schedule);
         }
 
-        return $payoutData->filter(); // Remove null values
+        // Return teacher payouts summary for the month
+        return $this->generateTeacherPayoutSummary($month);
     }
 
-    protected function calculatePayoutForSchedule(ClassSchedule $schedule, User $teacher, bool $isSubstitute, string $month): ?array
+    protected function updateSchedulePayoutCalculations(ClassSchedule $schedule): void
     {
-        if (! $teacher) {
-            return null;
-        }
-
         $attendanceCount = $schedule->attendances()->count();
         $basePay = config('teacher_pay.base_pay', 50.00);
         $bonusPerStudent = config('teacher_pay.bonus_per_student', 2.50);
@@ -50,19 +37,88 @@ class PayoutCalculationService
         $bonusPay = $attendanceCount * $bonusPerStudent;
         $totalPay = $basePay + $bonusPay;
 
-        return [
-            'class_schedule_id' => $schedule->id,
-            'teacher_id' => $teacher->id,
-            'teacher_name' => $teacher->name,
-            'class_name' => $schedule->learningClass->name ?? 'N/A',
-            'class_date' => $schedule->scheduled_date->format('Y-m-d'),
-            'month' => $month,
+        // Update class schedule with payout calculations
+        $updateData = [
             'student_count' => $attendanceCount,
-            'is_substitute' => $isSubstitute,
-            'base_pay' => $basePay,
-            'bonus_pay' => $bonusPay,
-            'total_pay' => $totalPay,
+            'teacher_base_pay' => $basePay,
+            'teacher_bonus_pay' => $bonusPay,
+            'teacher_total_pay' => $totalPay,
         ];
+
+        // If there's a substitute teacher, calculate their pay too
+        if ($schedule->substitute_teacher_id) {
+            $updateData['substitute_base_pay'] = $basePay;
+            $updateData['substitute_bonus_pay'] = $bonusPay;
+            $updateData['substitute_total_pay'] = $totalPay;
+        }
+
+        $schedule->update($updateData);
+    }
+
+    protected function generateTeacherPayoutSummary(string $month): Collection
+    {
+        $monthStart = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $monthEnd = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+
+        // Get all teachers who worked in this month
+        $teacherSchedules = ClassSchedule::whereBetween('scheduled_date', [$monthStart, $monthEnd])
+            ->with(['teacher', 'substituteTeacher', 'learningClass'])
+            ->get();
+
+        $teacherPayouts = collect();
+
+        // Group by teacher and calculate totals
+        $teacherTotals = $teacherSchedules->groupBy('teacher_id');
+        foreach ($teacherTotals as $teacherId => $schedules) {
+            $teacher = $schedules->first()->teacher;
+            $totalPay = $schedules->sum('teacher_total_pay');
+            
+            $teacherPayouts->push([
+                'teacher_id' => $teacherId,
+                'teacher_name' => $teacher->name,
+                'month' => $month,
+                'total_pay' => $totalPay,
+                'class_count' => $schedules->count(),
+                'total_students' => $schedules->sum('student_count'),
+            ]);
+        }
+
+        // Group by substitute teacher
+        $substituteTotals = $teacherSchedules->where('substitute_teacher_id', '!=', null)
+            ->groupBy('substitute_teacher_id');
+        
+        foreach ($substituteTotals as $teacherId => $schedules) {
+            $teacher = $schedules->first()->substituteTeacher;
+            $totalPay = $schedules->sum('substitute_total_pay');
+            
+            // Check if we already have this teacher from regular teaching
+            $existingIndex = $teacherPayouts->search(function ($item) use ($teacherId) {
+                return $item['teacher_id'] == $teacherId;
+            });
+
+            if ($existingIndex !== false) {
+                // Add substitute pay to existing teacher record
+                $existing = $teacherPayouts[$existingIndex];
+                $existing['total_pay'] += $totalPay;
+                $existing['substitute_class_count'] = $schedules->count();
+                $existing['substitute_students'] = $schedules->sum('student_count');
+                $teacherPayouts[$existingIndex] = $existing;
+            } else {
+                // Create new record for substitute-only teacher
+                $teacherPayouts->push([
+                    'teacher_id' => $teacherId,
+                    'teacher_name' => $teacher->name,
+                    'month' => $month,
+                    'total_pay' => $totalPay,
+                    'class_count' => 0,
+                    'total_students' => 0,
+                    'substitute_class_count' => $schedules->count(),
+                    'substitute_students' => $schedules->sum('student_count'),
+                ]);
+            }
+        }
+
+        return $teacherPayouts;
     }
 
     public function generatePayoutsForMonth(string $month): array
@@ -76,23 +132,18 @@ class PayoutCalculationService
             'errors' => [],
         ];
 
-        DB::transaction(function () use ($calculatedPayouts, &$results) {
+        DB::transaction(function () use ($calculatedPayouts, $month, &$results) {
             foreach ($calculatedPayouts as $payoutData) {
                 try {
                     $existingPayout = TeacherPayout::where([
-                        'class_schedule_id' => $payoutData['class_schedule_id'],
                         'teacher_id' => $payoutData['teacher_id'],
-                        'month' => $payoutData['month'],
+                        'month' => $month,
                     ])->first();
 
                     if ($existingPayout) {
                         // Update existing payout only if not paid
                         if (! $existingPayout->is_paid) {
                             $existingPayout->update([
-                                'student_count' => $payoutData['student_count'],
-                                'is_substitute' => $payoutData['is_substitute'],
-                                'base_pay' => $payoutData['base_pay'],
-                                'bonus_pay' => $payoutData['bonus_pay'],
                                 'total_pay' => $payoutData['total_pay'],
                             ]);
                             $results['updated']++;
@@ -102,13 +153,8 @@ class PayoutCalculationService
                     } else {
                         // Create new payout
                         TeacherPayout::create([
-                            'class_schedule_id' => $payoutData['class_schedule_id'],
                             'teacher_id' => $payoutData['teacher_id'],
-                            'month' => $payoutData['month'],
-                            'student_count' => $payoutData['student_count'],
-                            'is_substitute' => $payoutData['is_substitute'],
-                            'base_pay' => $payoutData['base_pay'],
-                            'bonus_pay' => $payoutData['bonus_pay'],
+                            'month' => $month,
                             'total_pay' => $payoutData['total_pay'],
                         ]);
                         $results['generated']++;

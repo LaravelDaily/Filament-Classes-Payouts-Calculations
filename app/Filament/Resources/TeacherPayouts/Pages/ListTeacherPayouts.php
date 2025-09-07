@@ -10,7 +10,6 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\MaxWidth;
 
 class ListTeacherPayouts extends ListRecords
 {
@@ -25,7 +24,7 @@ class ListTeacherPayouts extends ListRecords
                 ->color('success')
                 ->modalHeading('Generate Monthly Payouts')
                 ->modalDescription('Select a month to generate payouts for all teachers based on attendance records.')
-                ->modalWidth(MaxWidth::Large)
+                ->modalWidth('4xl')
                 ->form([
                     Select::make('month')
                         ->label('Select Month')

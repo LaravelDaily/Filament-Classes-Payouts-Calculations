@@ -37,6 +37,20 @@ class ClassSchedulesTable
                     ->sortable()
                     ->searchable()
                     ->placeholder('—'),
+                TextColumn::make('student_count')
+                    ->label('Students')
+                    ->alignCenter()
+                    ->sortable(),
+                TextColumn::make('teacher_total_pay')
+                    ->label('Teacher Pay')
+                    ->money('USD')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('substitute_total_pay')
+                    ->label('Substitute Pay')
+                    ->money('USD')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

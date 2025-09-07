@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('teacher_payouts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('class_schedule_id')->constrained('class_schedules');
             $table->foreignId('teacher_id')->constrained('users');
-            $table->decimal('base_pay', 10, 2)->default(0.00);
-            $table->decimal('bonus_pay', 10, 2)->default(0.00);
+            $table->string('month'); // Format: YYYY-MM
             $table->decimal('total_pay', 10, 2)->default(0.00);
+            $table->boolean('is_paid')->default(false);
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }

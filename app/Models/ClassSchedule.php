@@ -19,12 +19,25 @@ class ClassSchedule extends Model
         'end_time',
         'teacher_id',
         'substitute_teacher_id',
+        'student_count',
+        'teacher_base_pay',
+        'teacher_bonus_pay',
+        'teacher_total_pay',
+        'substitute_base_pay',
+        'substitute_bonus_pay',
+        'substitute_total_pay',
     ];
 
     protected function casts(): array
     {
         return [
             'scheduled_date' => 'date',
+            'teacher_base_pay' => 'decimal:2',
+            'teacher_bonus_pay' => 'decimal:2',
+            'teacher_total_pay' => 'decimal:2',
+            'substitute_base_pay' => 'decimal:2',
+            'substitute_bonus_pay' => 'decimal:2',
+            'substitute_total_pay' => 'decimal:2',
         ];
     }
 
@@ -48,8 +61,4 @@ class ClassSchedule extends Model
         return $this->hasMany(Attendance::class);
     }
 
-    public function teacherPayouts(): HasMany
-    {
-        return $this->hasMany(TeacherPayout::class);
-    }
 }

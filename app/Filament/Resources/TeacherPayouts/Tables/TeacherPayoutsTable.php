@@ -22,33 +22,9 @@ class TeacherPayoutsTable
                     ->label('Teacher')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('classSchedule.learningClass.name')
-                    ->label('Class')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('classSchedule.scheduled_date')
-                    ->label('Class Date')
-                    ->date()
-                    ->sortable(),
                 TextColumn::make('month')
                     ->label('Month')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('student_count')
-                    ->label('Students')
-                    ->alignCenter()
-                    ->sortable(),
-                IconColumn::make('is_substitute')
-                    ->label('Substitute')
-                    ->boolean()
-                    ->alignCenter(),
-                TextColumn::make('base_pay')
-                    ->label('Base Pay')
-                    ->money('USD')
-                    ->sortable(),
-                TextColumn::make('bonus_pay')
-                    ->label('Bonus Pay')
-                    ->money('USD')
                     ->sortable(),
                 TextColumn::make('total_pay')
                     ->label('Total Pay')
@@ -88,9 +64,6 @@ class TeacherPayoutsTable
                 SelectFilter::make('teacher_id')
                     ->relationship('teacher', 'name')
                     ->searchable(),
-                Filter::make('is_substitute')
-                    ->query(fn (Builder $query): Builder => $query->where('is_substitute', true))
-                    ->label('Substitute Teachers Only'),
                 Filter::make('is_paid')
                     ->query(fn (Builder $query): Builder => $query->where('is_paid', true))
                     ->label('Paid Only'),

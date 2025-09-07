@@ -19,6 +19,13 @@ return new class extends Migration
             $table->time('end_time');
             $table->foreignId('teacher_id')->constrained('users');
             $table->foreignId('substitute_teacher_id')->nullable()->constrained('users');
+            $table->integer('student_count')->default(0);
+            $table->decimal('teacher_base_pay', 10, 2)->default(0.00);
+            $table->decimal('teacher_bonus_pay', 10, 2)->default(0.00);
+            $table->decimal('teacher_total_pay', 10, 2)->default(0.00);
+            $table->decimal('substitute_base_pay', 10, 2)->default(0.00);
+            $table->decimal('substitute_bonus_pay', 10, 2)->default(0.00);
+            $table->decimal('substitute_total_pay', 10, 2)->default(0.00);
             $table->timestamps();
         });
     }
