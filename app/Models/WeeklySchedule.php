@@ -15,15 +15,9 @@ class WeeklySchedule extends Model
     protected $fillable = [
         'course_id',
         'teacher_id',
-        'substitute_teacher_id',
         'day_of_week',
         'start_time',
         'end_time',
-        'expected_student_count',
-        'teacher_base_pay',
-        'teacher_bonus_per_student',
-        'substitute_base_pay',
-        'substitute_bonus_per_student',
         'is_active',
         'start_date',
         'end_date',
@@ -34,10 +28,6 @@ class WeeklySchedule extends Model
         return [
             'start_date' => 'date',
             'end_date' => 'date',
-            'teacher_base_pay' => 'decimal:2',
-            'teacher_bonus_per_student' => 'decimal:2',
-            'substitute_base_pay' => 'decimal:2',
-            'substitute_bonus_per_student' => 'decimal:2',
             'is_active' => 'boolean',
         ];
     }
@@ -52,10 +42,6 @@ class WeeklySchedule extends Model
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    public function substituteTeacher(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'substitute_teacher_id');
-    }
 
     public function courseClasses(): HasMany
     {

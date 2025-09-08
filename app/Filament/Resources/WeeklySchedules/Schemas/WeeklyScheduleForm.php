@@ -52,53 +52,13 @@ class WeeklyScheduleForm
 
                 Section::make('Teachers')
                     ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                Select::make('teacher_id')
-                                    ->label('Primary Teacher')
-                                    ->relationship('teacher', 'name')
-                                    ->required()
-                                    ->searchable(),
-                                Select::make('substitute_teacher_id')
-                                    ->label('Substitute Teacher')
-                                    ->relationship('substituteTeacher', 'name')
-                                    ->searchable()
-                                    ->nullable(),
-                            ]),
+                        Select::make('teacher_id')
+                            ->label('Primary Teacher')
+                            ->relationship('teacher', 'name')
+                            ->required()
+                            ->searchable(),
                     ]),
 
-                Section::make('Attendance & Pay Rates')
-                    ->schema([
-                        Grid::make(4)
-                            ->schema([
-                                TextInput::make('expected_student_count')
-                                    ->label('Expected Students')
-                                    ->numeric()
-                                    ->default(0),
-                                TextInput::make('teacher_base_pay')
-                                    ->label('Teacher Base Pay')
-                                    ->numeric()
-                                    ->prefix('$')
-                                    ->step(0.01),
-                                TextInput::make('teacher_bonus_per_student')
-                                    ->label('Teacher Bonus / Student')
-                                    ->numeric()
-                                    ->prefix('$')
-                                    ->step(0.01),
-                                TextInput::make('substitute_base_pay')
-                                    ->label('Substitute Base Pay')
-                                    ->numeric()
-                                    ->prefix('$')
-                                    ->step(0.01),
-                                TextInput::make('substitute_bonus_per_student')
-                                    ->label('Substitute Bonus / Student')
-                                    ->numeric()
-                                    ->prefix('$')
-                                    ->step(0.01),
-                            ]),
-                    ])
-                    ->collapsible()
-                    ->collapsed(),
 
                 Section::make('Active Period')
                     ->schema([

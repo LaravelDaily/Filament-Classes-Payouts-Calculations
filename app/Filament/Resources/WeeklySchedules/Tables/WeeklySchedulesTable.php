@@ -36,21 +36,6 @@ class WeeklySchedulesTable
                 IconColumn::make('is_active')
                     ->label('Active')
                     ->boolean(),
-                TextColumn::make('expected_student_count')
-                    ->label('Expected')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('teacher_base_pay')
-                    ->label('Base Pay')
-                    ->money('USD')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('teacher_bonus_per_student')
-                    ->label('Bonus / Student')
-                    ->money('USD')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
