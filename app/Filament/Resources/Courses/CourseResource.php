@@ -36,7 +36,7 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            'weeklySchedules' => \App\Filament\Resources\Courses\RelationManagers\WeeklySchedulesRelationManager::class,
         ];
     }
 

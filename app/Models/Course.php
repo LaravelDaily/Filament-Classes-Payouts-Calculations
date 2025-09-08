@@ -40,4 +40,9 @@ class Course extends Model
     {
         return $this->hasMany(Enrollment::class);
     }
+
+    public function weeklySchedules(): HasMany
+    {
+        return $this->hasMany(WeeklySchedule::class);
+    }
 }
