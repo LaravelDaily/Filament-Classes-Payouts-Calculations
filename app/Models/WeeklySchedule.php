@@ -13,7 +13,7 @@ class WeeklySchedule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'learning_class_id',
+        'course_id',
         'teacher_id',
         'substitute_teacher_id',
         'day_of_week',
@@ -42,9 +42,9 @@ class WeeklySchedule extends Model
         ];
     }
 
-    public function learningClass(): BelongsTo
+    public function course(): BelongsTo
     {
-        return $this->belongsTo(LearningClass::class);
+        return $this->belongsTo(Course::class);
     }
 
     public function teacher(): BelongsTo
@@ -57,14 +57,14 @@ class WeeklySchedule extends Model
         return $this->belongsTo(User::class, 'substitute_teacher_id');
     }
 
-    public function classSchedules(): HasMany
+    public function courseClasses(): HasMany
     {
-        return $this->hasMany(ClassSchedule::class);
+        return $this->hasMany(CourseClass::class);
     }
 
     public function getDayNameAttribute(): string
     {
-        return match($this->day_of_week) {
+        return match ($this->day_of_week) {
             1 => 'Monday',
             2 => 'Tuesday',
             3 => 'Wednesday',

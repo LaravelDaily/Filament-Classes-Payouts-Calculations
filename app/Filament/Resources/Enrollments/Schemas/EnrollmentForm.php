@@ -19,8 +19,8 @@ class EnrollmentForm
                             ->relationship('student', 'name')
                             ->required()
                             ->searchable(),
-                        Select::make('learning_class_id')
-                            ->relationship('learningClass', 'name')
+                        Select::make('course_id')
+                            ->relationship('course', 'name')
                             ->required()
                             ->searchable(),
                         DatePicker::make('start_date')

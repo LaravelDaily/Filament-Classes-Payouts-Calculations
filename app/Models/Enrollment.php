@@ -13,7 +13,7 @@ class Enrollment extends Model
 
     protected $fillable = [
         'student_id',
-        'learning_class_id',
+        'course_id',
         'start_date',
         'end_date',
     ];
@@ -31,8 +31,8 @@ class Enrollment extends Model
         return $this->belongsTo(Student::class);
     }
 
-    public function learningClass(): BelongsTo
+    public function course(): BelongsTo
     {
-        return $this->belongsTo(LearningClass::class);
+        return $this->belongsTo(Course::class);
     }
 }

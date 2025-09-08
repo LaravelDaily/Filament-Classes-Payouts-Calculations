@@ -1,32 +1,29 @@
 <?php
 
-namespace App\Filament\Resources\Enrollments\Tables;
+namespace App\Filament\Resources\Courses\Tables;
 
+use App\Filament\Resources\Courses\CourseResource;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class EnrollmentsTable
+class CoursesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('student.name')
-                    ->label('Student')
+                TextColumn::make('classType.name')
                     ->searchable(),
-                TextColumn::make('course.name')
-                    ->label('Course')
+                TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('start_date')
-                    ->date()
+                TextColumn::make('price_per_student')
+                    ->money('USD')
                     ->sortable(),
-                TextColumn::make('end_date')
-                    ->date()
-                    ->sortable()
-                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -41,6 +38,11 @@ class EnrollmentsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                Action::make('attendance')
+                    ->label('Attendance')
+                    ->icon(Heroicon::ClipboardDocumentCheck)
+                    ->color('success')
+                    ->url(fn ($record) => CourseResource::getUrl('attendance', ['record' => $record])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

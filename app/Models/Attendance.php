@@ -12,13 +12,13 @@ class Attendance extends Model
     use HasFactory;
 
     protected $fillable = [
-        'class_schedule_id',
+        'course_class_id',
         'student_id',
     ];
 
-    public function classSchedule(): BelongsTo
+    public function courseClass(): BelongsTo
     {
-        return $this->belongsTo(ClassSchedule::class);
+        return $this->belongsTo(CourseClass::class);
     }
 
     public function student(): BelongsTo

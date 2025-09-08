@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\ClassSchedule;
+use App\Models\CourseClass;
 use App\Models\Student;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +19,7 @@ class AttendanceFactory extends Factory
     public function definition(): array
     {
         return [
-            'class_schedule_id' => ClassSchedule::inRandomOrder()->first()?->id ?? ClassSchedule::factory(),
+            'course_class_id' => CourseClass::inRandomOrder()->first()?->id ?? CourseClass::factory(),
             'student_id' => Student::inRandomOrder()->first()?->id ?? Student::factory(),
         ];
     }

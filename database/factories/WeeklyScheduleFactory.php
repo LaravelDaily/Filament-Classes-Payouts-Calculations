@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\LearningClass;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,13 +23,13 @@ class WeeklyScheduleFactory extends Factory
         $startTime = sprintf('%02d:%02d:00', $startHour, fake()->randomElement([0, 30]));
         $endHour = $startHour + fake()->numberBetween(1, 3);
         $endTime = sprintf('%02d:%02d:00', $endHour, fake()->randomElement([0, 30]));
-        
+
         $expectedStudentCount = fake()->numberBetween(5, 20);
         $basePay = fake()->randomFloat(2, 40, 80);
         $bonusPerStudent = fake()->randomFloat(2, 1.50, 4.00);
-        
+
         return [
-            'learning_class_id' => LearningClass::inRandomOrder()->first()?->id ?? LearningClass::factory(),
+            'course_id' => Course::inRandomOrder()->first()?->id ?? Course::factory(),
             'teacher_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
             'substitute_teacher_id' => fake()->boolean(30) ? (User::inRandomOrder()->first()?->id ?? User::factory()) : null,
             'day_of_week' => $dayOfWeek,

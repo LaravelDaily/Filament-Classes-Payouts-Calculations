@@ -25,7 +25,7 @@
         {{-- Attendance Grid --}}
         @php
             $students = $this->getEnrolledStudents();
-            $classSchedules = $this->getClassSchedulesForMonth();
+            $courseClasses = $this->getCourseClassesForMonth();
         @endphp
 
         @if($students->isEmpty())
@@ -39,12 +39,12 @@
                             No Students Enrolled
                         </h4>
                         <p class="fi-ta-empty-state-description text-sm text-gray-500 dark:text-gray-400">
-                            There are no students enrolled in this class for the selected month.
+                            There are no students enrolled in this course for the selected month.
                         </p>
                     </div>
                 </div>
             </div>
-        @elseif($classSchedules->isEmpty())
+        @elseif($courseClasses->isEmpty())
             <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                 <div class="fi-section-content p-6">
                     <div class="fi-ta-empty-state-content mx-auto flex max-w-lg flex-col items-center justify-center text-center">
@@ -52,10 +52,10 @@
                             <x-filament::icon icon="heroicon-o-calendar" class="fi-ta-empty-state-icon h-6 w-6 text-gray-500 dark:text-gray-400" />
                         </div>
                         <h4 class="fi-ta-empty-state-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
-                            No Classes Scheduled
+                            No Course Classes Scheduled
                         </h4>
                         <p class="fi-ta-empty-state-description text-sm text-gray-500 dark:text-gray-400">
-                            There are no classes scheduled for this month.
+                            There are no course classes scheduled for this month.
                         </p>
                     </div>
                 </div>
@@ -76,13 +76,13 @@
                                                     </span>
                                                 </span>
                                             </th>
-                                            @foreach($classSchedules as $schedule)
+                                            @foreach($courseClasses as $courseClass)
                                                 <th class="fi-ta-header-cell px-3 py-3.5 text-center">
                                                     <span class="group flex w-full items-center justify-center">
                                                         <span class="fi-ta-header-cell-label text-sm font-semibold text-gray-950 dark:text-white">
-                                                            <div>{{ $schedule->scheduled_date->format('M j') }}</div>
+                                                            <div>{{ $courseClass->scheduled_date->format('M j') }}</div>
                                                             <div class="text-xs text-gray-500 dark:text-gray-400">
-                                                                {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
+                                                                {{ \Carbon\Carbon::parse($courseClass->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($courseClass->end_time)->format('H:i') }}
                                                             </div>
                                                         </span>
                                                     </span>
@@ -104,8 +104,8 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                @foreach($classSchedules as $schedule)
-                                                    @php $key = "{$student->id}-{$schedule->id}"; @endphp
+                                                @foreach($courseClasses as $courseClass)
+                                                    @php $key = "{$student->id}-{$courseClass->id}"; @endphp
                                                     <td class="fi-ta-cell p-0 text-center">
                                                         <div class="fi-ta-col-wrp">
                                                             <div class="px-3 py-4">

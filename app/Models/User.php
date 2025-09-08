@@ -54,14 +54,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function classSchedules(): HasMany
+    public function courseClasses(): HasMany
     {
-        return $this->hasMany(ClassSchedule::class, 'teacher_id');
+        return $this->hasMany(CourseClass::class, 'teacher_id');
     }
 
-    public function substituteClassSchedules(): HasMany
+    public function substituteCourseClasses(): HasMany
     {
-        return $this->hasMany(ClassSchedule::class, 'substitute_teacher_id');
+        return $this->hasMany(CourseClass::class, 'substitute_teacher_id');
     }
 
     public function teacherPayouts(): HasMany

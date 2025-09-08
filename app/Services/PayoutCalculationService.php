@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\ClassSchedule;
+use App\Models\CourseClass;
 use App\Models\TeacherPayout;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -16,28 +15,28 @@ class PayoutCalculationService
         $monthStart = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
         $monthEnd = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
 
-        $classSchedules = ClassSchedule::whereBetween('scheduled_date', [$monthStart, $monthEnd])
-            ->with(['teacher', 'substituteTeacher', 'attendances', 'learningClass'])
+        $courseClasses = CourseClass::whereBetween('scheduled_date', [$monthStart, $monthEnd])
+            ->with(['teacher', 'substituteTeacher', 'attendances', 'course'])
             ->get();
 
-        foreach ($classSchedules as $schedule) {
-            $this->updateSchedulePayoutCalculations($schedule);
+        foreach ($courseClasses as $courseClass) {
+            $this->updateCourseClassPayoutCalculations($courseClass);
         }
 
         // Return teacher payouts summary for the month
         return $this->generateTeacherPayoutSummary($month);
     }
 
-    protected function updateSchedulePayoutCalculations(ClassSchedule $schedule): void
+    protected function updateCourseClassPayoutCalculations(CourseClass $courseClass): void
     {
-        $attendanceCount = $schedule->attendances()->count();
+        $attendanceCount = $courseClass->attendances()->count();
         $basePay = config('teacher_pay.base_pay', 50.00);
         $bonusPerStudent = config('teacher_pay.bonus_per_student', 2.50);
 
         $bonusPay = $attendanceCount * $bonusPerStudent;
         $totalPay = $basePay + $bonusPay;
 
-        // Update class schedule with payout calculations
+        // Update course class with payout calculations
         $updateData = [
             'student_count' => $attendanceCount,
             'teacher_base_pay' => $basePay,
@@ -46,13 +45,13 @@ class PayoutCalculationService
         ];
 
         // If there's a substitute teacher, calculate their pay too
-        if ($schedule->substitute_teacher_id) {
+        if ($courseClass->substitute_teacher_id) {
             $updateData['substitute_base_pay'] = $basePay;
             $updateData['substitute_bonus_pay'] = $bonusPay;
             $updateData['substitute_total_pay'] = $totalPay;
         }
 
-        $schedule->update($updateData);
+        $courseClass->update($updateData);
     }
 
     protected function generateTeacherPayoutSummary(string $month): Collection
@@ -61,36 +60,36 @@ class PayoutCalculationService
         $monthEnd = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
 
         // Get all teachers who worked in this month
-        $teacherSchedules = ClassSchedule::whereBetween('scheduled_date', [$monthStart, $monthEnd])
-            ->with(['teacher', 'substituteTeacher', 'learningClass'])
+        $teacherCourseClasses = CourseClass::whereBetween('scheduled_date', [$monthStart, $monthEnd])
+            ->with(['teacher', 'substituteTeacher', 'course'])
             ->get();
 
         $teacherPayouts = collect();
 
         // Group by teacher and calculate totals
-        $teacherTotals = $teacherSchedules->groupBy('teacher_id');
-        foreach ($teacherTotals as $teacherId => $schedules) {
-            $teacher = $schedules->first()->teacher;
-            $totalPay = $schedules->sum('teacher_total_pay');
-            
+        $teacherTotals = $teacherCourseClasses->groupBy('teacher_id');
+        foreach ($teacherTotals as $teacherId => $courseClasses) {
+            $teacher = $courseClasses->first()->teacher;
+            $totalPay = $courseClasses->sum('teacher_total_pay');
+
             $teacherPayouts->push([
                 'teacher_id' => $teacherId,
                 'teacher_name' => $teacher->name,
                 'month' => $month,
                 'total_pay' => $totalPay,
-                'class_count' => $schedules->count(),
-                'total_students' => $schedules->sum('student_count'),
+                'class_count' => $courseClasses->count(),
+                'total_students' => $courseClasses->sum('student_count'),
             ]);
         }
 
         // Group by substitute teacher
-        $substituteTotals = $teacherSchedules->where('substitute_teacher_id', '!=', null)
+        $substituteTotals = $teacherCourseClasses->where('substitute_teacher_id', '!=', null)
             ->groupBy('substitute_teacher_id');
-        
-        foreach ($substituteTotals as $teacherId => $schedules) {
-            $teacher = $schedules->first()->substituteTeacher;
-            $totalPay = $schedules->sum('substitute_total_pay');
-            
+
+        foreach ($substituteTotals as $teacherId => $courseClasses) {
+            $teacher = $courseClasses->first()->substituteTeacher;
+            $totalPay = $courseClasses->sum('substitute_total_pay');
+
             // Check if we already have this teacher from regular teaching
             $existingIndex = $teacherPayouts->search(function ($item) use ($teacherId) {
                 return $item['teacher_id'] == $teacherId;
@@ -100,8 +99,8 @@ class PayoutCalculationService
                 // Add substitute pay to existing teacher record
                 $existing = $teacherPayouts[$existingIndex];
                 $existing['total_pay'] += $totalPay;
-                $existing['substitute_class_count'] = $schedules->count();
-                $existing['substitute_students'] = $schedules->sum('student_count');
+                $existing['substitute_class_count'] = $courseClasses->count();
+                $existing['substitute_students'] = $courseClasses->sum('student_count');
                 $teacherPayouts[$existingIndex] = $existing;
             } else {
                 // Create new record for substitute-only teacher
@@ -112,8 +111,8 @@ class PayoutCalculationService
                     'total_pay' => $totalPay,
                     'class_count' => 0,
                     'total_students' => 0,
-                    'substitute_class_count' => $schedules->count(),
-                    'substitute_students' => $schedules->sum('student_count'),
+                    'substitute_class_count' => $courseClasses->count(),
+                    'substitute_students' => $courseClasses->sum('student_count'),
                 ]);
             }
         }

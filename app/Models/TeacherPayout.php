@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -30,15 +30,14 @@ class TeacherPayout extends Model
         ];
     }
 
-
     public function teacher(): BelongsTo
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    public function classSchedules(): HasMany
+    public function courseClasses(): HasMany
     {
-        return $this->hasMany(ClassSchedule::class, 'teacher_id', 'teacher_id')
+        return $this->hasMany(CourseClass::class, 'teacher_id', 'teacher_id')
             ->whereBetween('scheduled_date', [
                 Carbon::createFromFormat('Y-m', $this->month)->startOfMonth(),
                 Carbon::createFromFormat('Y-m', $this->month)->endOfMonth(),

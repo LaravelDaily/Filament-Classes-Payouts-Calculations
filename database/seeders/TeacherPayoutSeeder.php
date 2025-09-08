@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\TeacherPayout;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TeacherPayoutSeeder extends Seeder
@@ -17,10 +16,28 @@ class TeacherPayoutSeeder extends Seeder
         $teachers = User::whereHas('role', function ($query) {
             $query->where('name', 'Teacher');
         })->get();
-        
-        // Create 20 teacher payouts for various months and teachers
-        TeacherPayout::factory()->count(20)->create([
-            'teacher_id' => $teachers->random()->id,
-        ]);
+
+        if ($teachers->isEmpty()) {
+            return;
+        }
+
+        $months = ['2025-01', '2025-02', '2025-03', '2025-04', '2025-05'];
+
+        // Create payouts ensuring unique teacher-month combinations
+        foreach ($teachers as $teacher) {
+            foreach ($months as $month) {
+                TeacherPayout::firstOrCreate(
+                    [
+                        'teacher_id' => $teacher->id,
+                        'month' => $month,
+                    ],
+                    [
+                        'total_pay' => fake()->randomFloat(2, 50, 500),
+                        'is_paid' => fake()->boolean(30), // 30% chance of being paid
+                        'paid_at' => fake()->boolean(30) ? fake()->dateTimeThisYear() : null,
+                    ]
+                );
+            }
+        }
     }
 }

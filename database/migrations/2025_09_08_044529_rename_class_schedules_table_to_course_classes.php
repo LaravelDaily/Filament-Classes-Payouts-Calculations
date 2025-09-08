@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -10,8 +10,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Clear all existing data since we're restructuring
-        DB::table('teacher_payouts')->truncate();
+        Schema::rename('class_schedules', 'course_classes');
     }
 
     /**
@@ -19,6 +18,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // This migration only truncates data, so there's no structural change to reverse
+        Schema::rename('course_classes', 'class_schedules');
     }
 };

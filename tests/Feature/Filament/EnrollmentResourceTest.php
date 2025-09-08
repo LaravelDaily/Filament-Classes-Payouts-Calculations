@@ -3,8 +3,8 @@
 use App\Filament\Resources\Enrollments\Pages\CreateEnrollment;
 use App\Filament\Resources\Enrollments\Pages\EditEnrollment;
 use App\Filament\Resources\Enrollments\Pages\ListEnrollments;
+use App\Models\Course;
 use App\Models\Enrollment;
-use App\Models\LearningClass;
 use App\Models\Role;
 use App\Models\Student;
 use App\Models\User;
@@ -16,7 +16,7 @@ beforeEach(function () {
     Role::firstOrCreate(['name' => 'Admin']);
     Role::firstOrCreate(['name' => 'Teacher']);
 
-    // Create class types for LearningClass factory dependency
+    // Create class types for Course factory dependency
     \App\Models\ClassType::firstOrCreate(['name' => '1:1 Class']);
     \App\Models\ClassType::firstOrCreate(['name' => 'Group Class']);
 });
@@ -53,7 +53,7 @@ test('owner can render create enrollment page', function () {
 
     // Create required related data
     Student::factory()->create();
-    LearningClass::factory()->create();
+    Course::factory()->create();
 
     $this->actingAs($owner);
 
@@ -67,7 +67,7 @@ test('admin can render create enrollment page', function () {
 
     // Create required related data
     Student::factory()->create();
-    LearningClass::factory()->create();
+    Course::factory()->create();
 
     $this->actingAs($admin);
 

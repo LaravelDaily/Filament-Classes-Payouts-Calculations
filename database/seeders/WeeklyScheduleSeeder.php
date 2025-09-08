@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\LearningClass;
+use App\Models\Course;
 use App\Models\User;
 use App\Models\WeeklySchedule;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class WeeklyScheduleSeeder extends Seeder
@@ -15,44 +14,44 @@ class WeeklyScheduleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ensure we have some learning classes and users first
-        if (LearningClass::count() === 0) {
-            LearningClass::factory(5)->create();
+        // Ensure we have some courses and users first
+        if (Course::count() === 0) {
+            Course::factory(5)->create();
         }
-        
+
         if (User::count() === 0) {
             User::factory(10)->create();
         }
 
-        $spanishClass = LearningClass::first();
-        $mathClass = LearningClass::skip(1)->first();
-        $englishClass = LearningClass::skip(2)->first();
-        
+        $spanishCourse = Course::first();
+        $mathCourse = Course::skip(1)->first();
+        $englishCourse = Course::skip(2)->first();
+
         $teacher1 = User::first();
         $teacher2 = User::skip(1)->first();
         $teacher3 = User::skip(2)->first();
 
         // Create realistic weekly schedules
         WeeklySchedule::factory()->spanish()->create([
-            'learning_class_id' => $spanishClass->id,
+            'course_id' => $spanishCourse->id,
             'teacher_id' => $teacher1->id,
             'start_date' => now()->startOfMonth(),
         ]);
 
         WeeklySchedule::factory()->spanishThursday()->create([
-            'learning_class_id' => $spanishClass->id,
+            'course_id' => $spanishCourse->id,
             'teacher_id' => $teacher1->id,
             'start_date' => now()->startOfMonth(),
         ]);
 
         WeeklySchedule::factory()->mathMorning()->create([
-            'learning_class_id' => $mathClass->id,
+            'course_id' => $mathCourse->id,
             'teacher_id' => $teacher2->id,
             'start_date' => now()->startOfMonth(),
         ]);
 
         WeeklySchedule::factory()->englishEvening()->create([
-            'learning_class_id' => $englishClass->id,
+            'course_id' => $englishCourse->id,
             'teacher_id' => $teacher3->id,
             'start_date' => now()->startOfMonth(),
         ]);
