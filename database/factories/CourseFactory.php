@@ -44,7 +44,20 @@ class CourseFactory extends Factory
             'class_type_id' => ClassType::inRandomOrder()->first()->id,
             'name' => fake()->randomElement($classNames),
             'description' => fake()->paragraph(),
-            'price_per_student' => fake()->randomFloat(2, 25, 100),
+            // Use rounded prices (e.g., 30.00, 45.00, 70.00) within a realistic range
+            // Generate as multiples of 5 or 10 to avoid awkward cents like 52.49
+            'price_per_student' => (function () {
+                $min = 25;   // minimum price
+                $max = 100;  // maximum price
+                $steps = [5, 10];
+                $step = $steps[array_rand($steps)];
+
+                $minStep = (int) ceil($min / $step);
+                $maxStep = (int) floor($max / $step);
+                $price = random_int($minStep, $maxStep) * $step; // integer like 30, 45, 70
+
+                return (float) $price; // DB will store as decimal(10,2)
+            })(),
         ];
     }
 }

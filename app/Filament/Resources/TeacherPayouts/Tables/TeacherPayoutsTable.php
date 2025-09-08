@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TeacherPayouts\Tables;
 
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -11,6 +12,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class TeacherPayoutsTable
 {
@@ -76,6 +78,24 @@ class TeacherPayoutsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
+                    BulkAction::make('markAsPaid')
+                        ->label('Mark as Paid')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records): void {
+                            $now = now();
+
+                            $records->each(function ($record) use ($now) {
+                                if (! $record->is_paid) {
+                                    $record->update([
+                                        'is_paid' => true,
+                                        'paid_at' => $now,
+                                    ]);
+                                }
+                            });
+                        })
+                        ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
                 ]),
             ]);
