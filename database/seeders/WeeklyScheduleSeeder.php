@@ -27,33 +27,21 @@ class WeeklyScheduleSeeder extends Seeder
         $mathCourse = Course::skip(1)->first();
         $englishCourse = Course::skip(2)->first();
 
-        $teacher1 = User::first();
-        $teacher2 = User::skip(1)->first();
-        $teacher3 = User::skip(2)->first();
-
         // Create realistic weekly schedules
         WeeklySchedule::factory()->spanish()->create([
             'course_id' => $spanishCourse->id,
-            'teacher_id' => $teacher1->id,
-            'start_date' => now()->startOfMonth(),
         ]);
 
         WeeklySchedule::factory()->spanishThursday()->create([
             'course_id' => $spanishCourse->id,
-            'teacher_id' => $teacher1->id,
-            'start_date' => now()->startOfMonth(),
         ]);
 
         WeeklySchedule::factory()->mathMorning()->create([
             'course_id' => $mathCourse->id,
-            'teacher_id' => $teacher2->id,
-            'start_date' => now()->startOfMonth(),
         ]);
 
         WeeklySchedule::factory()->englishEvening()->create([
             'course_id' => $englishCourse->id,
-            'teacher_id' => $teacher3->id,
-            'start_date' => now()->startOfMonth(),
         ]);
 
         // Create some random additional schedules

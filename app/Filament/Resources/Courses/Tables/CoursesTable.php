@@ -21,6 +21,9 @@ class CoursesTable
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('teacher.name')
+                    ->label('Teacher')
+                    ->searchable(),
                 TextColumn::make('price_per_student')
                     ->money('USD')
                     ->sortable(),

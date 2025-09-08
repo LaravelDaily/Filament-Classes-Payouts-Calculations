@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('learning_classes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('class_type_id')->constrained('class_types');
+            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price_per_student', 10, 2);

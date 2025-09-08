@@ -16,6 +16,11 @@ class CourseForm
                 Select::make('class_type_id')
                     ->relationship('classType', 'name')
                     ->required(),
+                Select::make('teacher_id')
+                    ->label('Teacher')
+                    ->relationship('teacher', 'name')
+                    ->required()
+                    ->searchable(),
                 TextInput::make('name')
                     ->required(),
                 Textarea::make('description')

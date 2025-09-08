@@ -14,21 +14,15 @@ class WeeklySchedule extends Model
 
     protected $fillable = [
         'course_id',
-        'teacher_id',
         'day_of_week',
         'start_time',
         'end_time',
-        'is_active',
-        'start_date',
-        'end_date',
     ];
 
     protected function casts(): array
     {
         return [
-            'start_date' => 'date',
-            'end_date' => 'date',
-            'is_active' => 'boolean',
+            //
         ];
     }
 
@@ -36,12 +30,6 @@ class WeeklySchedule extends Model
     {
         return $this->belongsTo(Course::class);
     }
-
-    public function teacher(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'teacher_id');
-    }
-
 
     public function courseClasses(): HasMany
     {

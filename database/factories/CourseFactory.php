@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\ClassType;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -42,6 +43,7 @@ class CourseFactory extends Factory
 
         return [
             'class_type_id' => ClassType::inRandomOrder()->first()->id,
+            'teacher_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
             'name' => fake()->randomElement($classNames),
             'description' => fake()->paragraph(),
             // Use rounded prices (e.g., 30.00, 45.00, 70.00) within a realistic range

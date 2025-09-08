@@ -5,7 +5,6 @@ namespace App\Filament\Resources\WeeklySchedules\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -30,12 +29,6 @@ class WeeklySchedulesTable
                     ->label('End')
                     ->time('H:i')
                     ->sortable(),
-                TextColumn::make('teacher.name')
-                    ->label('Teacher')
-                    ->searchable(),
-                IconColumn::make('is_active')
-                    ->label('Active')
-                    ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -49,9 +42,6 @@ class WeeklySchedulesTable
                 SelectFilter::make('course_id')
                     ->label('Course')
                     ->relationship('course', 'name'),
-                SelectFilter::make('teacher_id')
-                    ->label('Teacher')
-                    ->relationship('teacher', 'name'),
                 SelectFilter::make('day_of_week')
                     ->label('Day of Week')
                     ->options([
@@ -75,4 +65,3 @@ class WeeklySchedulesTable
             ->defaultSort('course.name');
     }
 }
-

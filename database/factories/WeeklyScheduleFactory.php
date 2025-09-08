@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Course;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,19 +23,11 @@ class WeeklyScheduleFactory extends Factory
         $endHour = $startHour + fake()->numberBetween(1, 3);
         $endTime = sprintf('%02d:%02d:00', $endHour, fake()->randomElement([0, 30]));
 
-        $expectedStudentCount = fake()->numberBetween(5, 20);
-        $basePay = fake()->randomFloat(2, 40, 80);
-        $bonusPerStudent = fake()->randomFloat(2, 1.50, 4.00);
-
         return [
             'course_id' => Course::inRandomOrder()->first()?->id ?? Course::factory(),
-            'teacher_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
             'day_of_week' => $dayOfWeek,
             'start_time' => $startTime,
             'end_time' => $endTime,
-            'is_active' => fake()->boolean(90),
-            'start_date' => fake()->optional(0.7)->dateTimeBetween('-6 months', 'now'),
-            'end_date' => fake()->optional(0.3)->dateTimeBetween('+1 month', '+1 year'),
         ];
     }
 

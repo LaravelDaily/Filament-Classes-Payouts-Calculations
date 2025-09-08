@@ -2,11 +2,7 @@
 
 namespace App\Filament\Resources\WeeklySchedules\Schemas;
 
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -50,38 +46,13 @@ class WeeklyScheduleForm
                             ]),
                     ]),
 
-                Section::make('Teachers')
-                    ->schema([
-                        Select::make('teacher_id')
-                            ->label('Primary Teacher')
-                            ->relationship('teacher', 'name')
-                            ->required()
-                            ->searchable(),
-                    ]),
-
-
-                Section::make('Active Period')
-                    ->schema([
-                        Grid::make(3)
-                            ->schema([
-                                Toggle::make('is_active')
-                                    ->label('Active')
-                                    ->default(true),
-                                DatePicker::make('start_date')
-                                    ->label('Start Date')
-                                    ->native(false),
-                                DatePicker::make('end_date')
-                                    ->label('End Date')
-                                    ->native(false),
-                            ]),
-                    ]),
             ]);
     }
 
     protected static function getTimeOptions(): array
     {
         $options = [];
-        
+
         for ($hour = 7; $hour <= 23; $hour++) {
             for ($minute = 0; $minute < 60; $minute += 30) {
                 $timeKey = sprintf('%02d:%02d:00', $hour, $minute);
@@ -89,8 +60,7 @@ class WeeklyScheduleForm
                 $options[$timeKey] = $timeLabel;
             }
         }
-        
+
         return $options;
     }
 }
-

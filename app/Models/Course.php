@@ -14,6 +14,7 @@ class Course extends Model
 
     protected $fillable = [
         'class_type_id',
+        'teacher_id',
         'name',
         'description',
         'price_per_student',
@@ -29,6 +30,11 @@ class Course extends Model
     public function classType(): BelongsTo
     {
         return $this->belongsTo(ClassType::class);
+    }
+
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'teacher_id');
     }
 
     public function courseClasses(): HasMany
