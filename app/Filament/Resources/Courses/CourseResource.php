@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Courses;
 use App\Filament\Resources\Courses\Pages\CreateCourse;
 use App\Filament\Resources\Courses\Pages\EditCourse;
 use App\Filament\Resources\Courses\Pages\ListCourses;
-use App\Filament\Resources\Courses\Pages\ManageMonthlyAttendance;
 use App\Filament\Resources\Courses\Schemas\CourseForm;
 use App\Filament\Resources\Courses\Tables\CoursesTable;
 use App\Models\Course;
@@ -21,8 +20,6 @@ class CourseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?int $navigationSort = 1;
-
     public static function form(Schema $schema): Schema
     {
         return CourseForm::configure($schema);
@@ -36,7 +33,7 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            'weeklySchedules' => \App\Filament\Resources\Courses\RelationManagers\WeeklySchedulesRelationManager::class,
+            //
         ];
     }
 
@@ -46,7 +43,6 @@ class CourseResource extends Resource
             'index' => ListCourses::route('/'),
             'create' => CreateCourse::route('/create'),
             'edit' => EditCourse::route('/{record}/edit'),
-            'attendance' => ManageMonthlyAttendance::route('/{record}/attendance'),
         ];
     }
 }

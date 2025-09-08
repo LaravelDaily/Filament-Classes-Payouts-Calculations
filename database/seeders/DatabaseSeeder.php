@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             WeeklyScheduleSeeder::class,
             CourseClassSeeder::class,
             StudentSeeder::class,
-            EnrollmentSeeder::class,
+            CourseStudentSeeder::class,
             AttendanceSeeder::class,
             TeacherPayoutSeeder::class,
         ]);

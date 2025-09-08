@@ -83,6 +83,7 @@ test('teacher cannot render create course page', function () {
 
 test('owner can create course', function () {
     $owner = User::factory()->create(['role_id' => Role::where('name', 'Owner')->first()->id]);
+    $teacher = User::factory()->create(['role_id' => Role::where('name', 'Teacher')->first()->id]);
     $classType = ClassType::where('name', 'Group')->first();
 
     $this->actingAs($owner);
@@ -97,6 +98,7 @@ test('owner can create course', function () {
     // We can manually create a record to test the model works
     $course = Course::create([
         'class_type_id' => $classType->id,
+        'teacher_id' => $teacher->id,
         'name' => 'Advanced PHP',
         'description' => 'Advanced PHP programming course',
         'price_per_student' => 199.99,
@@ -105,6 +107,7 @@ test('owner can create course', function () {
     $this->assertDatabaseHas('courses', [
         'id' => $course->id,
         'class_type_id' => $classType->id,
+        'teacher_id' => $teacher->id,
         'name' => 'Advanced PHP',
         'description' => 'Advanced PHP programming course',
     ]);

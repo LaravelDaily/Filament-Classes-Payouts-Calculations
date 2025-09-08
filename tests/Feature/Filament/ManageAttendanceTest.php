@@ -5,7 +5,6 @@ use App\Models\Attendance;
 use App\Models\ClassType;
 use App\Models\Course;
 use App\Models\CourseClass;
-use App\Models\Enrollment;
 use App\Models\Role;
 use App\Models\Student;
 use App\Models\User;
@@ -115,19 +114,19 @@ test('page displays enrolled students for attendance', function () {
         'scheduled_date' => '2024-01-15',
     ]);
 
-    // Create enrollments
-    Enrollment::factory()->create([
-        'student_id' => $student1->id,
-        'course_id' => $course->id,
+    // Attach students to course
+    $course->students()->attach($student1->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
-    Enrollment::factory()->create([
-        'student_id' => $student2->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student2->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     $this->actingAs($owner);
@@ -151,27 +150,27 @@ test('page only shows students enrolled on schedule date', function () {
     ]);
 
     // Current enrollment (should show)
-    Enrollment::factory()->create([
-        'student_id' => $student1->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student1->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     // Past enrollment (should not show - ended before month started)
-    Enrollment::factory()->create([
-        'student_id' => $student2->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student2->id, [
         'start_date' => '2023-01-01',
         'end_date' => '2023-12-31',
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     // Future enrollment (should not show - starts after month ends)
-    Enrollment::factory()->create([
-        'student_id' => $student3->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student3->id, [
         'start_date' => '2024-02-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     $this->actingAs($owner);
@@ -194,18 +193,18 @@ test('can save attendance for students', function () {
         'scheduled_date' => '2024-01-15',
     ]);
 
-    Enrollment::factory()->create([
-        'student_id' => $student1->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student1->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
-    Enrollment::factory()->create([
-        'student_id' => $student2->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student2->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     $this->actingAs($owner);
@@ -243,11 +242,11 @@ test('can update existing attendance records', function () {
         'scheduled_date' => '2024-01-15',
     ]);
 
-    Enrollment::factory()->create([
-        'student_id' => $student->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     // Create existing attendance record
@@ -304,18 +303,18 @@ test('page loads existing attendance correctly', function () {
         'scheduled_date' => '2024-01-15',
     ]);
 
-    Enrollment::factory()->create([
-        'student_id' => $student1->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student1->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
-    Enrollment::factory()->create([
-        'student_id' => $student2->id,
-        'course_id' => $course->id,
+    $course->students()->attach($student2->id, [
         'start_date' => '2024-01-01',
         'end_date' => null,
+        'created_at' => now(),
+        'updated_at' => now(),
     ]);
 
     // Create attendance for student1 only

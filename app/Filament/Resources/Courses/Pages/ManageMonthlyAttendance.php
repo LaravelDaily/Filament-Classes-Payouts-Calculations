@@ -78,12 +78,12 @@ class ManageMonthlyAttendance extends Page implements HasForms
         $monthStart = Carbon::createFromFormat('Y-m', $this->selectedMonth)->startOfMonth();
         $monthEnd = Carbon::createFromFormat('Y-m', $this->selectedMonth)->endOfMonth();
 
-        return Student::whereHas('enrollments', function ($query) use ($monthStart, $monthEnd) {
-            $query->where('course_id', $this->record->id)
-                ->where('start_date', '<=', $monthEnd)
+        return Student::whereHas('courses', function ($query) use ($monthStart, $monthEnd) {
+            $query->where('courses.id', $this->record->id)
+                ->where('enrollments.start_date', '<=', $monthEnd)
                 ->where(function ($q) use ($monthStart) {
-                    $q->whereNull('end_date')
-                        ->orWhere('end_date', '>=', $monthStart);
+                    $q->whereNull('enrollments.end_date')
+                        ->orWhere('enrollments.end_date', '>=', $monthStart);
                 });
         })->orderBy('name')->get();
     }

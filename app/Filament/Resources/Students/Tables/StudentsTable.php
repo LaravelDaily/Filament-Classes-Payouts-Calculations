@@ -15,15 +15,26 @@ class StudentsTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                    
                 TextColumn::make('email')
-                    ->label('Email address')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                    
+                TextColumn::make('courses_count')
+                    ->label('Enrolled Courses')
+                    ->counts('courses')
+                    ->sortable(),
+                    
+                TextColumn::make('courses.name')
+                    ->label('Current Courses')
+                    ->badge()
+                    ->separator(', ')
+                    ->limit(3),
+                    
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                    ->label('Created')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

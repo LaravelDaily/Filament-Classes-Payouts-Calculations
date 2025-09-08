@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
@@ -42,9 +43,11 @@ class Course extends Model
         return $this->hasMany(CourseClass::class);
     }
 
-    public function enrollments(): HasMany
+    public function students(): BelongsToMany
     {
-        return $this->hasMany(Enrollment::class);
+        return $this->belongsToMany(Student::class, 'enrollments')
+            ->withPivot('start_date', 'end_date')
+            ->withTimestamps();
     }
 
     public function weeklySchedules(): HasMany
