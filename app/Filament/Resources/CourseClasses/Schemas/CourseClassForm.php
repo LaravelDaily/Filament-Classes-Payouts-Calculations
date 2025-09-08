@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\CourseClasses\Schemas;
 
+use App\Filament\Schemas\Components\TimeSelect;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -35,12 +35,12 @@ class CourseClassForm
                             ]),
                         Grid::make(2)
                             ->schema([
-                                TimePicker::make('start_time')
-                                    ->required()
-                                    ->native(false),
-                                TimePicker::make('end_time')
-                                    ->required()
-                                    ->native(false),
+                                TimeSelect::make('start_time')
+                                    ->label('Start Time')
+                                    ->required(),
+                                TimeSelect::make('end_time')
+                                    ->label('End Time')
+                                    ->required(),
                             ]),
                     ]),
 
