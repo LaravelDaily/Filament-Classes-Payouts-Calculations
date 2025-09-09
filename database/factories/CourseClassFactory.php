@@ -29,20 +29,22 @@ class CourseClassFactory extends Factory
         $bonusPay = $studentCount * $bonusPerStudent;
         $totalPay = $basePay + $bonusPay;
 
+        // Default to deterministic values to avoid flaky tests.
+        // Tests can explicitly set substitute fields when needed.
         return [
             'course_id' => Course::inRandomOrder()->first()?->id ?? Course::factory(),
             'scheduled_date' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d'),
             'start_time' => $startTime,
             'end_time' => $endTime,
             'teacher_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'substitute_teacher_id' => fake()->boolean(20) ? (User::inRandomOrder()->first()?->id ?? User::factory()) : null,
+            'substitute_teacher_id' => null,
             'student_count' => $studentCount,
             'teacher_base_pay' => $basePay,
             'teacher_bonus_pay' => $bonusPay,
             'teacher_total_pay' => $totalPay,
-            'substitute_base_pay' => fake()->boolean(20) ? $basePay : 0,
-            'substitute_bonus_pay' => fake()->boolean(20) ? $bonusPay : 0,
-            'substitute_total_pay' => fake()->boolean(20) ? $totalPay : 0,
+            'substitute_base_pay' => 0,
+            'substitute_bonus_pay' => 0,
+            'substitute_total_pay' => 0,
         ];
     }
 }

@@ -12,7 +12,7 @@ class CourseClassPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return in_array($user->role->name, ['Owner', 'Admin']);
     }
 
     /**
@@ -36,7 +36,7 @@ class CourseClassPolicy
      */
     public function update(User $user, CourseClass $courseClass): bool
     {
-        return true;
+        return in_array($user->role->name, ['Owner', 'Admin']);
     }
 
     /**

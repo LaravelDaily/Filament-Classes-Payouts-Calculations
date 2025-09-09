@@ -18,38 +18,29 @@ class StudentsTable
                     ->label('First Name')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('last_name')
                     ->label('Last Name')
                     ->searchable()
                     ->sortable(),
-                    
-                TextColumn::make('name')
-                    ->label('Full Name')
-                    ->searchable(['first_name', 'last_name'])
-                    ->sortable(),
-                    
+
                 TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-                    
+
                 TextColumn::make('courses_count')
                     ->label('Enrolled Courses')
                     ->counts('courses')
                     ->sortable(),
-                    
-                TextColumn::make('courses.name')
-                    ->label('Current Courses')
-                    ->badge()
-                    ->separator(', ')
-                    ->limit(3),
-                    
+
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->defaultPaginationPageOption(100)
             ->filters([
                 //
             ])

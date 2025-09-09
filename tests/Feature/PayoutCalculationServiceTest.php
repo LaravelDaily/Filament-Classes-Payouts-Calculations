@@ -22,19 +22,19 @@ beforeEach(function () {
 });
 
 test('calculates payouts for month correctly', function () {
-    // Use a very unique test month to avoid conflicts  
+    // Use a very unique test month to avoid conflicts
     $testMonth = '2020-05'; // Way in the past to avoid conflicts
     $testDate = Carbon::parse('2020-05-15');
-    
-    // Clean slate - ensure no existing data for this test month and related data
-    \App\Models\Attendance::whereHas('courseClass', function($q) {
-        $q->whereBetween('scheduled_date', [Carbon::parse('2020-05-01'), Carbon::parse('2020-05-31')]);
+
+    // Clean slate - ensure no existing data for both test months
+    \App\Models\Attendance::whereHas('courseClass', function ($q) {
+        $q->whereBetween('scheduled_date', [Carbon::parse('2020-05-01'), Carbon::parse('2020-06-30')]);
     })->delete();
     \App\Models\CourseClass::whereBetween('scheduled_date', [
         Carbon::parse('2020-05-01'),
-        Carbon::parse('2020-05-31')
+        Carbon::parse('2020-06-30'),
     ])->delete();
-    
+
     // Arrange
     $teacher = User::factory()->create();
     $course = Course::factory()->create();
@@ -73,16 +73,16 @@ test('calculates monthly payout summary correctly', function () {
     // Use a very unique test month to avoid conflicts
     $testMonth = '2020-06'; // Different from first test and way in the past
     $testDate = Carbon::parse('2020-06-15');
-    
-    // Clean slate - ensure no existing data for this test month and related data
-    \App\Models\Attendance::whereHas('courseClass', function($q) {
-        $q->whereBetween('scheduled_date', [Carbon::parse('2020-06-01'), Carbon::parse('2020-06-30')]);
+
+    // Clean slate - ensure no existing data for both test months
+    \App\Models\Attendance::whereHas('courseClass', function ($q) {
+        $q->whereBetween('scheduled_date', [Carbon::parse('2020-05-01'), Carbon::parse('2020-06-30')]);
     })->delete();
     \App\Models\CourseClass::whereBetween('scheduled_date', [
-        Carbon::parse('2020-06-01'),
-        Carbon::parse('2020-06-30')
+        Carbon::parse('2020-05-01'),
+        Carbon::parse('2020-06-30'),
     ])->delete();
-    
+
     // Arrange
     $teacher = User::factory()->create();
     $course = Course::factory()->create();

@@ -72,17 +72,10 @@ class TeacherPayoutResource extends Resource
 
     public static function getPages(): array
     {
-        $pages = [
+        return [
             'index' => ListTeacherPayouts::route('/'),
+            'create' => CreateTeacherPayout::route('/create'),
+            'edit' => EditTeacherPayout::route('/{record}/edit'),
         ];
-
-        $user = auth()->user();
-
-        if ($user?->isAdmin()) {
-            $pages['create'] = CreateTeacherPayout::route('/create');
-            $pages['edit'] = EditTeacherPayout::route('/{record}/edit');
-        }
-
-        return $pages;
     }
 }
