@@ -63,7 +63,7 @@ class WeeklyScheduleFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'day_of_week' => 3, // Wednesday
             'start_time' => '18:00:00',
-            'end_time' => '20:00:00',
+            'end_time' => '19:30:00',
         ]);
     }
 }

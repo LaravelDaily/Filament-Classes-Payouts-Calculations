@@ -30,10 +30,10 @@ class CourseClassSeeder extends Seeder
 
         $timeSlots = [
             ['start' => '09:00:00', 'end' => '10:30:00'],
-            ['start' => '10:45:00', 'end' => '12:15:00'],
+            ['start' => '11:00:00', 'end' => '12:30:00'],
             ['start' => '13:00:00', 'end' => '14:30:00'],
-            ['start' => '14:45:00', 'end' => '16:15:00'],
-            ['start' => '16:30:00', 'end' => '18:00:00'],
+            ['start' => '15:00:00', 'end' => '16:30:00'],
+            ['start' => '17:00:00', 'end' => '18:30:00'],
         ];
 
         // Create schedules for each course throughout September
