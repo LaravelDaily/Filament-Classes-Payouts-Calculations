@@ -18,7 +18,7 @@ class CourseClassResource extends Resource
 {
     protected static ?string $model = CourseClass::class;
 
-    protected static ?string $navigationLabel = 'Course Classes';
+    protected static ?string $navigationLabel = 'Classes';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
