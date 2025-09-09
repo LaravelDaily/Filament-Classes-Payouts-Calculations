@@ -45,6 +45,7 @@ class UsersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultGroup('role.name')
+            // ->paginated(false)
             ->paginationPageOptions([100])
             ->defaultPaginationPageOption(100)
             ->filters([

@@ -114,8 +114,7 @@
                                                                         <input 
                                                                             type="checkbox"
                                                                             wire:model.defer="attendanceData.{{ $key }}"
-                                                                            value="present"
-                                                                            @if(($attendanceData[$key] ?? 'absent') === 'present') checked @endif
+                                                                            @if($attendanceData[$key] ?? false) checked @endif
                                                                             class="fi-checkbox-input rounded border-gray-300 bg-white text-primary-600 shadow-sm ring-0 focus:ring-2 focus:ring-primary-600 checked:bg-primary-600 checked:border-primary-600 disabled:bg-gray-50 disabled:text-gray-50 dark:bg-gray-900 dark:border-gray-600 dark:checked:bg-primary-500 dark:checked:border-primary-500 dark:focus:ring-primary-500"
                                                                         />
                                                                     </label>

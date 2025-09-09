@@ -68,7 +68,7 @@ class ManageMonthlyAttendance extends Page implements HasForms
         foreach ($students as $student) {
             foreach ($courseClasses as $courseClass) {
                 $key = "{$student->id}-{$courseClass->id}";
-                $this->attendanceData[$key] = $existingAttendance->get($student->id)?->has($courseClass->id) ? 'present' : 'absent';
+                $this->attendanceData[$key] = $existingAttendance->get($student->id)?->has($courseClass->id) ? true : false;
             }
         }
     }
@@ -85,7 +85,7 @@ class ManageMonthlyAttendance extends Page implements HasForms
                     $q->whereNull('enrollments.end_date')
                         ->orWhere('enrollments.end_date', '>=', $monthStart);
                 });
-        })->orderBy('name')->get();
+        })->orderBy('first_name')->orderBy('last_name')->get();
     }
 
     public function getCourseClassesForMonth(): Collection
@@ -119,9 +119,9 @@ class ManageMonthlyAttendance extends Page implements HasForms
             foreach ($students as $student) {
                 foreach ($courseClasses as $courseClass) {
                     $key = "{$student->id}-{$courseClass->id}";
-                    $status = $this->attendanceData[$key] ?? 'absent';
+                    $isPresent = $this->attendanceData[$key] ?? false;
 
-                    if ($status === 'present') {
+                    if ($isPresent) {
                         Attendance::updateOrCreate([
                             'course_class_id' => $courseClass->id,
                             'student_id' => $student->id,

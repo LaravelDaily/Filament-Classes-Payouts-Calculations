@@ -39,7 +39,7 @@ class StudentsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->paginationPageOptions([10, 25, 50, 100])
+            ->paginationPageOptions([100])
             ->defaultPaginationPageOption(100)
             ->filters([
                 //
