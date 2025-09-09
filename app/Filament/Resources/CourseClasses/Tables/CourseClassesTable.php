@@ -24,37 +24,38 @@ class CourseClassesTable
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('scheduled_date')
+                    ->label('Date')
                     ->date()
                     ->sortable(),
-                TextColumn::make('start_time')
-                    ->time('H:i')
-                    ->sortable(),
-                TextColumn::make('end_time')
-                    ->time('H:i')
-                    ->sortable(),
+                TextColumn::make('time_range')
+                    ->label('Time')
+                    ->getStateUsing(fn ($record) => substr($record->start_time, 0, 5).' - '.substr($record->end_time, 0, 5)
+                    )
+                    ->sortable(query: function ($query, $direction) {
+                        return $query->orderBy('start_time', $direction);
+                    }),
                 TextColumn::make('teacher.name')
                     ->label('Teacher')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('substituteTeacher.name')
-                    ->label('Substitute Teacher')
+                    ->label('Substitute')
                     ->sortable()
                     ->searchable()
                     ->placeholder('—'),
-                TextColumn::make('student_count')
+                TextColumn::make('attendances_count')
                     ->label('Students')
                     ->alignCenter()
+                    ->counts('attendances')
                     ->sortable(),
                 TextColumn::make('teacher_total_pay')
                     ->label('Teacher Pay')
                     ->money('USD')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('substitute_total_pay')
                     ->label('Substitute Pay')
                     ->money('USD')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
