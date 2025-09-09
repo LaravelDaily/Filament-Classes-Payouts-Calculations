@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\CourseClasses\Schemas;
 
 use App\Filament\Schemas\Components\TimeSelect;
+use App\Models\Attendance;
+use App\Models\CourseClass;
 use App\Models\Student;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -81,7 +83,7 @@ class CourseClassForm
                                     ->pluck('name', 'id')
                                     ->toArray();
                             })
-                            ->afterStateHydrated(function (Set $set, ?\App\Models\CourseClass $record): void {
+                            ->afterStateHydrated(function (Set $set, ?CourseClass $record): void {
                                 if (! $record) {
                                     $set('attendance_student_ids', []);
 
@@ -91,7 +93,7 @@ class CourseClassForm
                                 $set('attendance_student_ids', $record->attendances()->pluck('student_id')->all());
                             })
                             ->dehydrated(false)
-                            ->afterStateUpdated(function (Set $set, $state, ?\App\Models\CourseClass $record): void {
+                            ->afterStateUpdated(function (Set $set, $state, ?CourseClass $record): void {
                                 if (! $record) {
                                     return;
                                 }
@@ -103,11 +105,11 @@ class CourseClassForm
                                 static::recalculatePayTotals($record);
                             }),
                     ])
-                    ->hidden(fn (?\App\Models\CourseClass $record) => $record === null),
+                    ->hidden(fn (?CourseClass $record) => $record === null),
             ]);
     }
 
-    protected static function syncAttendanceRecords(\App\Models\CourseClass $courseClass, array $studentIds): void
+    protected static function syncAttendanceRecords(CourseClass $courseClass, array $studentIds): void
     {
         // Get current attendance records
         $currentAttendance = $courseClass->attendances()->pluck('student_id')->toArray();
@@ -120,7 +122,7 @@ class CourseClassForm
 
         // Add new attendance records
         foreach ($studentsToAdd as $studentId) {
-            \App\Models\Attendance::create([
+            Attendance::create([
                 'course_class_id' => $courseClass->id,
                 'student_id' => $studentId,
             ]);
@@ -134,7 +136,7 @@ class CourseClassForm
         }
     }
 
-    protected static function recalculatePayTotals(\App\Models\CourseClass $courseClass): void
+    protected static function recalculatePayTotals(CourseClass $courseClass): void
     {
         // Get actual attendance count
         $attendanceCount = $courseClass->attendances()->count();

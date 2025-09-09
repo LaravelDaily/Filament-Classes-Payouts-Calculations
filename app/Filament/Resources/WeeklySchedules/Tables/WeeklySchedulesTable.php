@@ -62,6 +62,7 @@ class WeeklySchedulesTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('course.name');
+            ->modifyQueryUsing(fn ($query) => $query->with('course'))
+            ->defaultSort('id');
     }
 }
