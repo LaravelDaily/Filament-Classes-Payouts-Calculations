@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WeeklySchedules\Tables;
 
+use App\Enums\DayOfWeek;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -44,15 +45,7 @@ class WeeklySchedulesTable
                     ->relationship('course', 'name'),
                 SelectFilter::make('day_of_week')
                     ->label('Day of Week')
-                    ->options([
-                        1 => 'Monday',
-                        2 => 'Tuesday',
-                        3 => 'Wednesday',
-                        4 => 'Thursday',
-                        5 => 'Friday',
-                        6 => 'Saturday',
-                        7 => 'Sunday',
-                    ]),
+                    ->options(DayOfWeek::options()),
             ])
             ->recordActions([
                 EditAction::make(),

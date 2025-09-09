@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\WeeklySchedules\Schemas;
 
+use App\Enums\DayOfWeek;
 use App\Filament\Schemas\Components\TimeSelect;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Grid;
@@ -26,15 +27,7 @@ class WeeklyScheduleForm
                             ->schema([
                                 Select::make('day_of_week')
                                     ->label('Day of Week')
-                                    ->options([
-                                        1 => 'Monday',
-                                        2 => 'Tuesday',
-                                        3 => 'Wednesday',
-                                        4 => 'Thursday',
-                                        5 => 'Friday',
-                                        6 => 'Saturday',
-                                        7 => 'Sunday',
-                                    ])
+                                    ->options(DayOfWeek::options())
                                     ->required(),
                                 TimeSelect::make('start_time')
                                     ->label('Start Time')

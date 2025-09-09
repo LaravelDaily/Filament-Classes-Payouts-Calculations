@@ -43,10 +43,7 @@ class CourseForm
                     })
                     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->first_name} {$record->last_name}")
                     ->columns(4)
-                    ->columnSpanFull()
-                    ->extraAttributes([
-                        'class' => 'compact-checkbox-list',
-                    ]),
+                    ->columnSpanFull(),
             ]);
     }
 }

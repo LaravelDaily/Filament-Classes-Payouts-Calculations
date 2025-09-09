@@ -211,8 +211,8 @@ test('can save attendance for students', function () {
 
     Livewire::test(ManageMonthlyAttendance::class, ['record' => $course->id])
         ->set('selectedMonth', '2024-01')
-        ->set("attendanceData.{$student1->id}-{$courseClass->id}", 'present')
-        ->set("attendanceData.{$student2->id}-{$courseClass->id}", 'absent')
+        ->set("attendanceData.{$student1->id}-{$courseClass->id}", true)
+        ->set("attendanceData.{$student2->id}-{$courseClass->id}", false)
         ->call('save')
         ->assertNotified('Attendance saved successfully');
 
@@ -260,12 +260,12 @@ test('can update existing attendance records', function () {
     // First verify student shows as present (existing record)
     Livewire::test(ManageMonthlyAttendance::class, ['record' => $course->id])
         ->set('selectedMonth', '2024-01')
-        ->assertSet("attendanceData.{$student->id}-{$courseClass->id}", 'present');
+        ->assertSet("attendanceData.{$student->id}-{$courseClass->id}", true);
 
     // Now change to absent and save
     Livewire::test(ManageMonthlyAttendance::class, ['record' => $course->id])
         ->set('selectedMonth', '2024-01')
-        ->set("attendanceData.{$student->id}-{$courseClass->id}", 'absent')
+        ->set("attendanceData.{$student->id}-{$courseClass->id}", false)
         ->call('save')
         ->assertNotified('Attendance saved successfully');
 
@@ -327,8 +327,8 @@ test('page loads existing attendance correctly', function () {
 
     Livewire::test(ManageMonthlyAttendance::class, ['record' => $course->id])
         ->set('selectedMonth', '2024-01')
-        ->assertSet("attendanceData.{$student1->id}-{$courseClass->id}", 'present')
-        ->assertSet("attendanceData.{$student2->id}-{$courseClass->id}", 'absent');
+        ->assertSet("attendanceData.{$student1->id}-{$courseClass->id}", true)
+        ->assertSet("attendanceData.{$student2->id}-{$courseClass->id}", false);
 });
 
 test('page title shows learning class name', function () {

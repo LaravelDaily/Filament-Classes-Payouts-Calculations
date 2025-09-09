@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DayOfWeek;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,15 +39,8 @@ class WeeklySchedule extends Model
 
     public function getDayNameAttribute(): string
     {
-        return match ($this->day_of_week) {
-            1 => 'Monday',
-            2 => 'Tuesday',
-            3 => 'Wednesday',
-            4 => 'Thursday',
-            5 => 'Friday',
-            6 => 'Saturday',
-            7 => 'Sunday',
-            default => 'Unknown',
-        };
+        $dayOfWeek = DayOfWeek::fromValue($this->day_of_week);
+
+        return $dayOfWeek?->label() ?? 'Unknown';
     }
 }

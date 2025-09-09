@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Courses\RelationManagers;
 
+use App\Enums\DayOfWeek;
+use App\Filament\Schemas\Components\TimeSelect;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -36,23 +38,13 @@ class WeeklySchedulesRelationManager extends RelationManager
                             ->schema([
                                 Select::make('day_of_week')
                                     ->label('Day of Week')
-                                    ->options([
-                                        1 => 'Monday',
-                                        2 => 'Tuesday',
-                                        3 => 'Wednesday',
-                                        4 => 'Thursday',
-                                        5 => 'Friday',
-                                        6 => 'Saturday',
-                                        7 => 'Sunday',
-                                    ])
+                                    ->options(DayOfWeek::options())
                                     ->required(),
-                                Select::make('start_time')
+                                TimeSelect::make('start_time')
                                     ->label('Start Time')
-                                    ->options($this->getTimeOptions())
                                     ->required(),
-                                Select::make('end_time')
+                                TimeSelect::make('end_time')
                                     ->label('End Time')
-                                    ->options($this->getTimeOptions())
                                     ->required(),
                             ]),
                     ]),
@@ -79,15 +71,7 @@ class WeeklySchedulesRelationManager extends RelationManager
             ->filters([
                 SelectFilter::make('day_of_week')
                     ->label('Day of Week')
-                    ->options([
-                        1 => 'Monday',
-                        2 => 'Tuesday',
-                        3 => 'Wednesday',
-                        4 => 'Thursday',
-                        5 => 'Friday',
-                        6 => 'Saturday',
-                        7 => 'Sunday',
-                    ]),
+                    ->options(DayOfWeek::options()),
             ])
             ->headerActions([
                 Action::make('create')
@@ -98,7 +82,7 @@ class WeeklySchedulesRelationManager extends RelationManager
                         $this->getOwnerRecord()->weeklySchedules()->create($data);
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->label('Edit')
                     ->modalHeading('Edit Weekly Schedule')
@@ -112,25 +96,10 @@ class WeeklySchedulesRelationManager extends RelationManager
                     ->requiresConfirmation()
                     ->action(fn ($record) => $record->delete()),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    protected function getTimeOptions(): array
-    {
-        $options = [];
-
-        for ($hour = 7; $hour <= 23; $hour++) {
-            for ($minute = 0; $minute < 60; $minute += 30) {
-                $timeKey = sprintf('%02d:%02d:00', $hour, $minute);
-                $timeLabel = sprintf('%02d:%02d', $hour, $minute);
-                $options[$timeKey] = $timeLabel;
-            }
-        }
-
-        return $options;
     }
 }
