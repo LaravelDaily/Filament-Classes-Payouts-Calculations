@@ -44,6 +44,9 @@ class UsersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultGroup('role.name')
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->defaultPaginationPageOption(100)
             ->filters([
                 SelectFilter::make('role')
                     ->relationship('role', 'name'),
