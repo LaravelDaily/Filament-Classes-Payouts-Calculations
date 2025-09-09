@@ -42,8 +42,17 @@ class CourseForm
                     
                 CheckboxList::make('students')
                     ->relationship('students', 'name')
-                    ->columns(2)
-                    ->columnSpanFull(),
+                    ->getOptionLabelFromRecordUsing(fn (Student $record) => $record->name)
+                    ->options(function () {
+                        return Student::query()
+                            ->orderByRaw("SUBSTRING_INDEX(name, ' ', -1), name")
+                            ->pluck('name', 'id');
+                    })
+                    ->columns(4)
+                    ->columnSpanFull()
+                    ->extraAttributes([
+                        'class' => 'compact-checkbox-list',
+                    ]),
             ]);
     }
 }
