@@ -1,21 +1,4 @@
-@import 'tailwindcss';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
-
-/* Compact checkbox list styling for better space utilization */
-.compact-checkbox-list {
-    @apply space-y-1;
-}
-
-.compact-checkbox-list .fi-fo-component-ctn {
-    @apply gap-x-4 gap-y-1;
-}
-
-.compact-checkbox-list .fi-checkbox label {
-    @apply text-sm leading-tight py-1;
-}
-
-.compact-checkbox-list .fi-checkbox {
-    @apply mb-1;
-}

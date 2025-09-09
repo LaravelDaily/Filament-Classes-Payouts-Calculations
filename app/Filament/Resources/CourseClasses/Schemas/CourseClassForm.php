@@ -75,7 +75,9 @@ class CourseClassForm
                                                     ->orWhere('enrollments.end_date', '>=', $scheduledDate);
                                             });
                                     })
-                                    ->orderBy('name')
+                                    ->orderBy('first_name')
+                                    ->orderBy('last_name')
+                                    ->get()
                                     ->pluck('name', 'id')
                                     ->toArray();
                             })
