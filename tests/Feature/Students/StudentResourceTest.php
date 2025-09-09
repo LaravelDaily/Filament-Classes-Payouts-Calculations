@@ -108,7 +108,8 @@ test('owner can render edit student page', function () {
     Livewire::test(EditStudent::class, ['record' => $student->getRouteKey()])
         ->assertSuccessful()
         ->assertFormExists()
-        ->assertFormFieldExists('name')
+        ->assertFormFieldExists('first_name')
+        ->assertFormFieldExists('last_name')
         ->assertFormFieldExists('email');
 });
 
