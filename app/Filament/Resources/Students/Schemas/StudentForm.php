@@ -12,9 +12,15 @@ class StudentForm
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('first_name')
+                    ->label('First Name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(100),
+                    
+                TextInput::make('last_name')
+                    ->label('Last Name')
+                    ->required()
+                    ->maxLength(100),
                     
                 TextInput::make('email')
                     ->email()

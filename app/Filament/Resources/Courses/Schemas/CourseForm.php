@@ -41,9 +41,14 @@ class CourseForm
                     ->step(0.01),
                     
                 CheckboxList::make('students')
-                    ->relationship('students', 'name')
-                    ->columns(2)
-                    ->columnSpanFull(),
+                    ->relationship('students', 'name', function ($query) {
+                        return $query->orderBy('last_name')->orderBy('first_name');
+                    })
+                    ->columns(4)
+                    ->columnSpanFull()
+                    ->extraAttributes([
+                        'class' => 'compact-checkbox-list',
+                    ]),
             ]);
     }
 }

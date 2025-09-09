@@ -46,8 +46,8 @@ test('teacher cannot list students', function () {
 
 test('owner can search students by name', function () {
     $owner = User::factory()->create(['role_id' => Role::where('name', 'Owner')->first()->id]);
-    $student1 = Student::factory()->create(['name' => 'John Doe']);
-    $student2 = Student::factory()->create(['name' => 'Jane Smith']);
+    $student1 = Student::factory()->create(['first_name' => 'John', 'last_name' => 'Doe']);
+    $student2 = Student::factory()->create(['first_name' => 'Jane', 'last_name' => 'Smith']);
 
     $this->actingAs($owner);
 
@@ -115,7 +115,8 @@ test('owner can render edit student page', function () {
 test('admin can edit student form displays current data', function () {
     $admin = User::factory()->create(['role_id' => Role::where('name', 'Admin')->first()->id]);
     $student = Student::factory()->create([
-        'name' => 'John Doe',
+        'first_name' => 'John',
+        'last_name' => 'Doe',
         'email' => 'john@example.com',
     ]);
 
@@ -123,7 +124,8 @@ test('admin can edit student form displays current data', function () {
 
     Livewire::test(EditStudent::class, ['record' => $student->getRouteKey()])
         ->assertSchemaStateSet([
-            'name' => 'John Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
             'email' => 'john@example.com',
         ]);
 });
