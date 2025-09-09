@@ -42,7 +42,7 @@ class CourseForm
                     
                 CheckboxList::make('students')
                     ->relationship('students', 'name', function ($query) {
-                        return $query->orderByRaw("SUBSTRING_INDEX(name, ' ', -1), name");
+                        return $query->orderBy('last_name')->orderBy('first_name');
                     })
                     ->columns(4)
                     ->columnSpanFull()

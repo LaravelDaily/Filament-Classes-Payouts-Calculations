@@ -14,8 +14,19 @@ class StudentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('first_name')
+                    ->label('First Name')
                     ->searchable()
+                    ->sortable(),
+                    
+                TextColumn::make('last_name')
+                    ->label('Last Name')
+                    ->searchable()
+                    ->sortable(),
+                    
+                TextColumn::make('name')
+                    ->label('Full Name')
+                    ->searchable(['first_name', 'last_name'])
                     ->sortable(),
                     
                 TextColumn::make('email')
@@ -49,6 +60,7 @@ class StudentsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('last_name');
     }
 }

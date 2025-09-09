@@ -106,8 +106,8 @@ test('page shows substitute teacher when assigned', function () {
 test('page displays enrolled students for attendance', function () {
     $owner = createTestUserWithRole('Owner');
     $course = Course::factory()->create();
-    $student1 = Student::factory()->create(['name' => 'John Doe']);
-    $student2 = Student::factory()->create(['name' => 'Jane Smith']);
+    $student1 = Student::factory()->create(['first_name' => 'John', 'last_name' => 'Doe']);
+    $student2 = Student::factory()->create(['first_name' => 'Jane', 'last_name' => 'Smith']);
 
     $courseClass = CourseClass::factory()->create([
         'course_id' => $course->id,
@@ -140,9 +140,9 @@ test('page displays enrolled students for attendance', function () {
 test('page only shows students enrolled on schedule date', function () {
     $owner = createTestUserWithRole('Owner');
     $course = Course::factory()->create();
-    $student1 = Student::factory()->create(['name' => 'Current Student']);
-    $student2 = Student::factory()->create(['name' => 'Past Student']);
-    $student3 = Student::factory()->create(['name' => 'Future Student']);
+    $student1 = Student::factory()->create(['first_name' => 'Current', 'last_name' => 'Student']);
+    $student2 = Student::factory()->create(['first_name' => 'Past', 'last_name' => 'Student']);
+    $student3 = Student::factory()->create(['first_name' => 'Future', 'last_name' => 'Student']);
 
     $courseClass = CourseClass::factory()->create([
         'course_id' => $course->id,

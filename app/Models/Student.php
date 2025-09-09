@@ -13,9 +13,19 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
     ];
+
+    protected $appends = [
+        'name',
+    ];
+
+    public function getNameAttribute(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     public function courses(): BelongsToMany
     {
