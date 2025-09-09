@@ -68,4 +68,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(TeacherPayout::class, 'teacher_id');
     }
+
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
+
+    public function isTeacher(): bool
+    {
+        return $this->role->name === 'Teacher';
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role->name, ['Admin', 'Owner']);
+    }
 }

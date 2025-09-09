@@ -76,51 +76,55 @@ class CourseClassesTable
             ->recordActions([
                 EditAction::make(),
             ])
-            ->headerActions([
-                Action::make('generate_monthly_schedules')
-                    ->label('Generate Monthly Schedules')
-                    ->color('success')
-                    ->icon('heroicon-o-calendar-days')
-                    ->modalHeading('Generate Class Schedules for Month')
-                    ->modalDescription('Generate class schedules based on weekly schedule patterns. Note: Schedules can only be generated once per month.')
-                    ->schema([
-                        Select::make('month_year')
-                            ->label('Select Month')
-                            ->options(function () {
-                                $service = new ScheduleGenerationService;
+            ->headerActions(
+                auth()->user()?->isAdmin()
+                    ? [
+                        Action::make('generate_monthly_schedules')
+                            ->label('Generate Monthly Schedules')
+                            ->color('success')
+                            ->icon('heroicon-o-calendar-days')
+                            ->modalHeading('Generate Class Schedules for Month')
+                            ->modalDescription('Generate class schedules based on weekly schedule patterns. Note: Schedules can only be generated once per month.')
+                            ->schema([
+                                Select::make('month_year')
+                                    ->label('Select Month')
+                                    ->options(function () {
+                                        $service = new ScheduleGenerationService;
 
-                                return $service->getAvailableMonthsForGeneration()
-                                    ->pluck('label', 'value')
-                                    ->toArray();
-                            })
-                            ->placeholder('Choose a month...')
-                            ->required()
-                            ->helperText('Only months without existing generated schedules are shown'),
-                    ])
-                    ->action(function (array $data) {
-                        try {
-                            [$year, $month] = explode('-', $data['month_year']);
-                            $service = new ScheduleGenerationService;
+                                        return $service->getAvailableMonthsForGeneration()
+                                            ->pluck('label', 'value')
+                                            ->toArray();
+                                    })
+                                    ->placeholder('Choose a month...')
+                                    ->required()
+                                    ->helperText('Only months without existing generated schedules are shown'),
+                            ])
+                            ->action(function (array $data) {
+                                try {
+                                    [$year, $month] = explode('-', $data['month_year']);
+                                    $service = new ScheduleGenerationService;
 
-                            $createdSchedules = $service->generateMonthlySchedules((int) $year, (int) $month);
+                                    $createdSchedules = $service->generateMonthlySchedules((int) $year, (int) $month);
 
-                            $monthName = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
+                                    $monthName = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
 
-                            Notification::make()
-                                ->title('Schedules Generated Successfully!')
-                                ->body(sprintf('Created %d class schedules for %s.', count($createdSchedules), $monthName))
-                                ->success()
-                                ->send();
+                                    Notification::make()
+                                        ->title('Schedules Generated Successfully!')
+                                        ->body(sprintf('Created %d class schedules for %s.', count($createdSchedules), $monthName))
+                                        ->success()
+                                        ->send();
 
-                        } catch (\Exception $e) {
-                            Notification::make()
-                                ->title('Generation Failed')
-                                ->body($e->getMessage())
-                                ->danger()
-                                ->send();
-                        }
-                    }),
-            ])
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                        ->title('Generation Failed')
+                                        ->body($e->getMessage())
+                                        ->danger()
+                                        ->send();
+                                }
+                            }),
+                    ]
+                    : []
+            )
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

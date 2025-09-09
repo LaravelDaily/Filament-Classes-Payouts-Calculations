@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TeacherPayoutResource extends Resource
 {
@@ -41,12 +42,47 @@ class TeacherPayoutResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        if ($user?->isTeacher()) {
+            return $query->where('teacher_id', $user->id);
+        }
+
+        return $query;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
+
     public static function getPages(): array
     {
-        return [
+        $pages = [
             'index' => ListTeacherPayouts::route('/'),
-            'create' => CreateTeacherPayout::route('/create'),
-            'edit' => EditTeacherPayout::route('/{record}/edit'),
         ];
+
+        $user = auth()->user();
+
+        if ($user?->isAdmin()) {
+            $pages['create'] = CreateTeacherPayout::route('/create');
+            $pages['edit'] = EditTeacherPayout::route('/{record}/edit');
+        }
+
+        return $pages;
     }
 }

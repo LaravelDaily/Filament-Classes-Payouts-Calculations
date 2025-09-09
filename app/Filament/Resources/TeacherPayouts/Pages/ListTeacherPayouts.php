@@ -17,6 +17,10 @@ class ListTeacherPayouts extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        if (auth()->user()?->isTeacher()) {
+            return [];
+        }
+
         return [
             Action::make('generatePayouts')
                 ->label('Generate Monthly Payouts')

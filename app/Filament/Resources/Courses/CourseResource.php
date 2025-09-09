@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseResource extends Resource
 {
@@ -38,6 +39,19 @@ class CourseResource extends Resource
         return [
             'weeklySchedules' => \App\Filament\Resources\Courses\RelationManagers\WeeklySchedulesRelationManager::class,
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        if ($user?->isTeacher()) {
+            return $query->where('teacher_id', $user->id);
+        }
+
+        return $query;
     }
 
     public static function getPages(): array

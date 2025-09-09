@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseClassResource extends Resource
 {
@@ -39,6 +40,22 @@ class CourseClassResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $user = auth()->user();
+
+        if ($user?->isTeacher()) {
+            return $query->where(function (Builder $query) use ($user) {
+                $query->where('teacher_id', $user->id)
+                    ->orWhere('substitute_teacher_id', $user->id);
+            });
+        }
+
+        return $query;
     }
 
     public static function getPages(): array

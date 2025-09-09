@@ -63,9 +63,6 @@ class TeacherPayoutsTable
                         return $months;
                     })
                     ->default(now()->format('Y-m')),
-                SelectFilter::make('teacher_id')
-                    ->relationship('teacher', 'name')
-                    ->searchable(),
                 Filter::make('is_paid')
                     ->query(fn (Builder $query): Builder => $query->where('is_paid', true))
                     ->label('Paid Only'),
@@ -73,31 +70,37 @@ class TeacherPayoutsTable
                     ->query(fn (Builder $query): Builder => $query->where('is_paid', false))
                     ->label('Unpaid Only'),
             ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    BulkAction::make('markAsPaid')
-                        ->label('Mark as Paid')
-                        ->icon('heroicon-o-check-circle')
-                        ->color('success')
-                        ->requiresConfirmation()
-                        ->action(function (Collection $records): void {
-                            $now = now();
+            ->recordActions(
+                auth()->user()?->isAdmin()
+                    ? [EditAction::make()]
+                    : []
+            )
+            ->toolbarActions(
+                auth()->user()?->isAdmin()
+                    ? [
+                        BulkActionGroup::make([
+                            BulkAction::make('markAsPaid')
+                                ->label('Mark as Paid')
+                                ->icon('heroicon-o-check-circle')
+                                ->color('success')
+                                ->requiresConfirmation()
+                                ->action(function (Collection $records): void {
+                                    $now = now();
 
-                            $records->each(function ($record) use ($now) {
-                                if (! $record->is_paid) {
-                                    $record->update([
-                                        'is_paid' => true,
-                                        'paid_at' => $now,
-                                    ]);
-                                }
-                            });
-                        })
-                        ->deselectRecordsAfterCompletion(),
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+                                    $records->each(function ($record) use ($now) {
+                                        if (! $record->is_paid) {
+                                            $record->update([
+                                                'is_paid' => true,
+                                                'paid_at' => $now,
+                                            ]);
+                                        }
+                                    });
+                                })
+                                ->deselectRecordsAfterCompletion(),
+                            DeleteBulkAction::make(),
+                        ]),
+                    ]
+                    : []
+            );
     }
 }
