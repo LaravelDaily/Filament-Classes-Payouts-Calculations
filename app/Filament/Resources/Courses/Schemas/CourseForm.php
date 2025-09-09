@@ -41,12 +41,8 @@ class CourseForm
                     ->step(0.01),
                     
                 CheckboxList::make('students')
-                    ->relationship('students', 'name')
-                    ->getOptionLabelFromRecordUsing(fn (Student $record) => $record->name)
-                    ->options(function () {
-                        return Student::query()
-                            ->orderByRaw("SUBSTRING_INDEX(name, ' ', -1), name")
-                            ->pluck('name', 'id');
+                    ->relationship('students', 'name', function ($query) {
+                        return $query->orderByRaw("SUBSTRING_INDEX(name, ' ', -1), name");
                     })
                     ->columns(4)
                     ->columnSpanFull()
