@@ -29,7 +29,7 @@ class ListTeacherPayouts extends ListRecords
                 ->modalHeading('Generate Monthly Payouts')
                 ->modalDescription('Select a month to generate payouts for all teachers based on attendance records.')
                 ->modalWidth('4xl')
-                ->form([
+                ->schema([
                     Select::make('month')
                         ->label('Select Month')
                         ->options(function () {

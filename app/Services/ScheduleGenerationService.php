@@ -22,15 +22,6 @@ class ScheduleGenerationService
 
         // Get all active weekly schedules
         $weeklySchedules = WeeklySchedule::with(['course', 'teacher', 'substituteTeacher'])
-            ->where('is_active', true)
-            ->where(function ($query) use ($endOfMonth) {
-                $query->whereNull('start_date')
-                    ->orWhere('start_date', '<=', $endOfMonth);
-            })
-            ->where(function ($query) use ($startOfMonth) {
-                $query->whereNull('end_date')
-                    ->orWhere('end_date', '>=', $startOfMonth);
-            })
             ->get();
 
         $createdSchedules = [];
@@ -92,38 +83,14 @@ class ScheduleGenerationService
 
     protected function createCourseClassFromWeekly(WeeklySchedule $weeklySchedule, Carbon $date): CourseClass
     {
-        $studentCount = $weeklySchedule->expected_student_count;
-
-        $teacherBonusPay = $studentCount * $weeklySchedule->teacher_bonus_per_student;
-        $teacherTotalPay = $weeklySchedule->teacher_base_pay + $teacherBonusPay;
-
-        $substituteBonusPay = $weeklySchedule->substitute_teacher_id
-            ? $studentCount * $weeklySchedule->substitute_bonus_per_student
-            : 0;
-        $substituteTotalPay = $weeklySchedule->substitute_base_pay + $substituteBonusPay;
-
-        DB::statement('INSERT INTO course_classes (course_id, weekly_schedule_id, scheduled_date, start_time, end_time, teacher_id, substitute_teacher_id, student_count, teacher_base_pay, teacher_bonus_pay, teacher_total_pay, substitute_base_pay, substitute_bonus_pay, substitute_total_pay, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())', [
-            $weeklySchedule->course_id,
-            $weeklySchedule->id,
-            $date->format('Y-m-d'),
-            $weeklySchedule->start_time,
-            $weeklySchedule->end_time,
-            $weeklySchedule->teacher_id,
-            $weeklySchedule->substitute_teacher_id,
-            $studentCount,
-            $weeklySchedule->teacher_base_pay,
-            $teacherBonusPay,
-            $teacherTotalPay,
-            $weeklySchedule->substitute_base_pay,
-            $substituteBonusPay,
-            $substituteTotalPay,
+        return CourseClass::create([
+            'course_id' => $weeklySchedule->course_id,
+            'weekly_schedule_id' => $weeklySchedule->id,
+            'scheduled_date' => $date->format('Y-m-d'),
+            'start_time' => $weeklySchedule->start_time,
+            'end_time' => $weeklySchedule->end_time,
+            'teacher_id' => $weeklySchedule->course->teacher_id,
         ]);
-
-        return CourseClass::where('scheduled_date', $date->format('Y-m-d'))
-            ->where('weekly_schedule_id', $weeklySchedule->id)
-            ->where('course_id', $weeklySchedule->course_id)
-            ->orderBy('id', 'desc')
-            ->first();
     }
 
     public function getAvailableMonthsForGeneration(): Collection

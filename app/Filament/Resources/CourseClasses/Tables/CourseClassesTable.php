@@ -96,8 +96,7 @@ class CourseClassesTable
                                             ->toArray();
                                     })
                                     ->placeholder('Choose a month...')
-                                    ->required()
-                                    ->helperText('Only months without existing generated schedules are shown'),
+                                    ->required(),
                             ])
                             ->action(function (array $data) {
                                 try {

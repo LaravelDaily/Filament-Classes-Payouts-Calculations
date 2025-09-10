@@ -37,6 +37,16 @@ class WeeklySchedule extends Model
         return $this->hasMany(CourseClass::class);
     }
 
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'teacher_id');
+    }
+
+    public function substituteTeacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'substitute_teacher_id');
+    }
+
     public function getDayNameAttribute(): string
     {
         $dayOfWeek = DayOfWeek::fromValue($this->day_of_week);
